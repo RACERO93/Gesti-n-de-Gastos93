@@ -1,0 +1,9 @@
+
+{
+  "userId": 1,
+  "categoryId": 2,
+  "title": "Transporte",
+  "description": "Bus ida y vuelta",
+  "amount": 5000,
+  "date": "2025-07-08"
+}

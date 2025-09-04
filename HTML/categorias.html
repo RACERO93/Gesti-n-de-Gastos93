@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion de Categorias</title>
+  <link rel="stylesheet" href="../styles_css/categorias.css">
+  <link rel="icon" href="logo.png">
+  </style>
+</head>
+
+<body>
+
+  <!-- Modal de Agregar Categorias y Editar Categorias -->
+  <div  class="img">
+  <img src="logo.png" alt="JHJ">
+  </div>
+  <h1>Gestion de Categorias</h1>
+  <button id="btnOpenModal">Agregar Categoria</button>
+  <a href="gastosMes.html" style="float: right;">Volver</a>
+
+
+  <!-- Modal de Agreagar Categoria  -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-borde">
+        <button id="closeModalBtn" class="close">X</button>
+        <h2 id="tituloModal">Agregar Categoria</h2>
+
+        <input type="text" id="nuevaCategoria" placeholder="Nombre de la categoria" />
+        <p id="mensajeCategoria"></p>
+
+        <button id="btnAgregarCategoria">Agregar Categoria</button>
+        <button id="btnGuardarCategoria" style="display: none;">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCategoria"></tbody>
+  </table>
+
+  <!-- Tu script JS debe ir despues de todo el HTML -->
+  <script src="../Javascript/categorias.js"></script>
+
+</body>
+
+</html>

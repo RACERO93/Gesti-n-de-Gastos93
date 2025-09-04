@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Gastos por Mes</title>
+  <link rel="stylesheet" href="../styles_css/gastosMes.css">
+  <link rel="icon" href="logo.png">
+  <style>
+  </style>
+</head>
+
+<body>
+  <div class="img">
+  <img src="logo.png" alt="JHJ">
+  </div>
+  <h2>Gastos por Mes</h2>
+
+  <button id="btnOpenModal" style="display: none;">Nueva Categoria</button>
+
+  <button id="btnOpenModalGastos">Agregar Gasto</button><br><br>
+  <a href="categorias.html"><button>Categorias</button></a>
+  <!-- Boton para guardar un gasto editar -->
+  <!-- <button id="btnGuardar" style="display: none;" onclick="actualizarGasto()">Guardar cambios</button> -->
+  <div id="mensajeError"
+    style="display:none; color: white; background-color: red; padding: 10px; margin: 10px 0; border-radius: 5px;">
+  </div>
+  <!-- <button type="button" onclick="limpiarFormulario()">Cancelar</button> -->
+
+  <br><br><a href="../menu.html" style="float: right;">Volver</a>
+  <!-- Botones de meses -->
+  <div class="meses" id="mesesContainer"></div>
+
+
+  <div class="filtros">
+    <input type="text" id="filtroTitulo" placeholder="Buscar por titulo" oninput="filtrarGastos()">
+    <select id="filtroCategoria" onchange="filtrarGastos()">
+      <option value="">Todas las categorias</option>
+    </select>
+
+
+    <input type="number" id="filtroMin" placeholder="Valor minimo" oninput="filtrarGastos()">
+    <input type="number" id="filtroMax" placeholder="Valor maximo" oninput="filtrarGastos()">
+    <!-- <button onclick="filtrarGastos()">Buscar</button> -->
+
+  </div>
+
+
+
+  <!-- Tabla de gastos -->
+  <table>
+    <thead>
+      <tr>
+        <th>Titulo</th>
+        <th>Categoria</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Acciones </th>
+      </tr>
+    </thead>
+    <tbody id="tablaGastos"></tbody>
+  </table>
+  <div class="modal">
+
+    
+      <div class="contentModal"><button class="btnModal" id="closeModal">x</button>
+<div class="overlay">
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!-- Modal Gastos  -->
+
+  <div class="modalGastos" style="display: none;" class="modals">
+    <div class="overlay">
+      <div class="contentGasto"><button class="btnModal" id="closeModalGastos">x</button>
+        <div class="content">
+
+          <!-- Formulario de gastos-->
+          <!-- <form id="formularioAgregarGasto"> -->
+          <div class="formulario">
+            <h2 id="tituloModal">Nuevo Gasto</h2>
+            <input type="text" id="titulo" placeholder="Titulo">
+            <span class="error" id="errorTitulo"></span>
+            <input type="text" id="descripcion" placeholder="Descripcion">
+            <span class="error" id="errorDescripcion"></span>
+            <input type="number" id="monto" placeholder="Monto">
+            <span class="error" id="errorMonto"></span>
+
+            <select id="categoria">
+              <option disabled selected>Seleccionar una Categoria</option>
+            </select>
+            <span class="error" id="errorCategoria"></span>
+
+
+            <input type="date" id="fecha">
+            <span class="error" id="errorFecha"></span>
+            <!-- Boton para agregar un gasto nuevo -->
+            <button id="btnAgregar" style="display: none;" onclick="agregarGasto(event)">Guardar Gastos</button>
+            <button id="btnGuardar" style="display: none;" onclick="actualizarGasto()">Guardar cambios</button>
+            <button class="btnModal">Cancelar</button>
+
+
+
+
+
+            <!-- Boton para agregar un gasto nuevo -->
+
+            <!-- <button id="btnAgregar" onclick="agregarGasto(event)">Enviar</button> -->
+            <!-- <button class="btnModal">Cancelar</button> -->
+
+
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi quo dolor a cum vitae natus? Harum veniam atque cumque similique excepturi reiciendis. Quasi, pariatur. Magnam itaque cum voluptatem fugit assumenda! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum fuga recusandae earum totam laboriosam ut corporis sit reprehenderit ipsam quaerat, accusamus minima alias sapiente consectetur incidunt nisi! Aliquam, veritatis corporis. lo 
+ Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium perferendis itaque facilis debitis nostrum dolores doloribus? Aperiam unde maxime facere repudiandae magnam libero, culpa et mollitia, alias voluptas, error iure. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta amet laborum officia dolorum voluptatem voluptatibus fuga nemo, iure libero vitae consectetur delectus dicta quasi non dolor odio aut saepe perferendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias hic velit magnam, deleniti voluptatum tempore earum culpa error, minima praesentium in! Neque numquam similique quasi voluptatum aperiam error veritatis. Eius! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo vel perferendis aspernatur. Quam dignissimos aut voluptates porro similique adipisci vero ex, necessitatibus, delectus sint, eligendi libero quasi accusamus nesciunt maxime. Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore excepturi incidunt, ea fugiat alias tempora beatae mollitia delectus nihil pariatur obcaecati provident. Totam ab optio doloribus nisi earum? Beatae, aliquid. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nobis ullam et, in, quos aliquam natus doloribus cupiditate, vero minus ducimus illo repellendus quia fuga temporibus accusantium doloremque. Eos, harum architecto! Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, doloremque nam quasi magni tempore a? Doloribus quia architecto, inventore earum ea fugit aspernatur sapiente culpa repudiandae non temporibus placeat asperiores?Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste officia debitis officiis eaque explicabo quas, suscipit rem voluptatem, ullam corrupti accusantium, ipsa qui veniam unde tenetur? Ipsam veritatis reiciendis quo! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla dignissimos at animi quos temporibus, necessitatibus nam voluptatum doloremque ipsum distinctio est magnam officiis beatae asperiores adipisci consequatur minima. Est, officia!
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur amet deleniti ex officia. Ullam harum repellendus deleniti iure, cupiditate voluptatibus dicta molestiae ipsa, voluptas eius perferendis sapiente illum vero maxime! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eligendi quae cumque esse, expedita omnis consequuntur quis culpa qui architecto soluta quisquam. Reprehenderit similique recusandae dolorem velit iure sunt officiis eveniet. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur minima, error praesentium, quia ex veritatis fugit omnis esse earum velit quibusdam. Quasi praesentium quam beatae voluptatum tempora dolorem et corrupti?Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui ad dolore, laborum dolorem nesciunt aliquam dignissimos exercitationem atque. Quam animi odit vero perferendis expedita dolores esse recusandae quos tenetur iusto. Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum sapiente ipsum quod velit laborum deleniti veniam animi aliquid aperiam obcaecati facere, blanditiis voluptate aliquam tempora consequatur aspernatur nesciunt provident? Eligendi.  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam enim nam quibusdam doloribus. Perspiciatis nesciunt labore alias inventore placeat, culpa quae nostrum? Eius velit voluptate adipisci, laborum explicabo quisquam sed! Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure eaque alias culpa dolore quidem! Voluptatibus, earum iusto! Fuga, repellat quos necessitatibus beatae harum exercitationem expedita. Soluta ea minus fugiat tempore. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam totam culpa unde vero laboriosam voluptas, perspiciatis ab mollitia, perferendis deleniti, odit molestiae rerum qui officia aliquam voluptatum adipisci eaque sint.
+
+
+  <script src="../Javascript/gastosMes.js"></script>
+
+
+</body>
+
+</html>

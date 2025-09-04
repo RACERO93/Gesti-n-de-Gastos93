@@ -1,0 +1,49 @@
+body {
+        font-size: 20px;
+        font-family: serif;
+        text-align: center;
+        margin: 0;
+        padding: 74px;
+        background: linear-gradient(180deg, rgba(251, 251, 251, 0) 34%, rgba(50, 200, 253, 1) 77%);
+        /* background: linear-gradient(0deg, rgba(251,251,251,0) 34%, rgba(45,101,253,1) 77%); */
+}
+
+img{
+        display: flex;
+        width: 110px;
+        height: 140px;
+        margin: auto;
+        margin-top: 20px;
+}
+
+
+h2 {
+        color: #333;
+        font-size: 3em;
+        font-family: serif;
+}
+
+
+
+.acciones {
+        margin-top: 40px;
+
+}
+
+button  {
+        padding: 5px;
+        font-size: 15px;
+        margin: 10px;
+        color: rgb(17, 17, 17);
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+
+}
+
+button:hover {
+        background-color: #9dec9d;
+        font-weight: 700;
+        font-size: 22PX;
+
+}

@@ -1,0 +1,181 @@
+    body {
+
+        font-family:serif;
+        padding: 0px;
+        margin: 0 ! important;
+        background: linear-gradient(180deg, rgba(251, 200, 251, 0) 34%, rgba(60, 220, 200, 1) 77%);
+        position: relative;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    .meses {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    .meses button {
+        margin: 5px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        background-color: #eee;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .meses button.activo {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .formulario,
+    .filtros {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .formulario input,
+    .formulario select,
+    .filtros input,
+    .filtros select {
+        padding: 6px;
+        width: 200px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f9f9f9;
+    }
+
+    .modal .modalGastos {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 0;
+        display: none;
+
+
+    }
+
+    .modal .overlay .modalGastos {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(13, 14, 14, 0.493);
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(13, 14, 14, 0.493);
+        
+        
+    }
+
+    .modalGastos .overlay .contentGasto {
+        width: 400px;
+        height: auto;
+        border: solid red;
+        background-color: rgb(250, 246, 246);
+        padding: 20px;
+        border-radius: 10px;
+        position: fixed;
+        z-index: 30;
+        left: 35%;
+        top: 12%;
+        
+        justify-content: center;
+        align-items: center;
+    
+    }
+
+    .modalGastos .overlay .contentGasto:hover{
+        box-shadow: 0 0 20px red ;
+    }
+
+    .modalGastos .formulario input,
+    .modalGastos .formulario select,
+    .modalGastos .formulario button {
+        width: 100%;
+        padding: 8px;
+        flex-direction: column;
+        gap: 10px;
+        width: 98%;
+    
+    }
+    .modal{
+        display: none;
+        
+    
+
+    }
+
+    .btnModal {
+        float: right;
+        border: none;
+        color: white;
+        background-color: red;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .btnGastos {
+        float: right;
+        border: none;
+        color: white;
+        background-color: red;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    form>button {
+        width: 150px;
+        height: 40px;
+        border-radius: 8px;
+        border: none;
+        background-color: darkcyan;
+        color: #060606;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .error {
+        color: red;
+        font-size: 0.9em;
+    }
+
+    .img{
+        display: flex;
+        width: 80px;
+        height: 120px;
+        margin: auto;
+        text-align: center;
+        margin-top: 20px;
+        
+    }

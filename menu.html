@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <title>Menú</title>
+  <link rel="stylesheet" href="./styles_css/menu.css">
+  <link rel="icon" href="logo.png">
+  
+  <style>
+
+  </style>
+</head>
+
+<header>
+  <img src="logo.png"  alt="JHJ" class="img">
+</header>
+
+<body>
+  <h2>Bienvenido</h2>
+  <div class="info">
+    <p><strong>Nombre:</strong> <span id="nombreUsuario"></span></p>
+
+    <p><strong>Correo:</strong> <span id="correoUsuario"></span></p>
+  </div>
+
+  <div class="acciones">
+    <a href="./HTML/perfil.html"><button>Editar Perfil</button></a>
+    <a href="./HTML/gastosMes.html"><button>Gastos</button></a>
+    <a href="./HTML/gastoGeneral.html"><button>Gastos General</button></a>
+    <a href="./HTML/dashboard.html"><button>Dashboard</button></a>
+
+    <button onclick="cerrarSesion()">Cerrar Sesion</button>
+
+
+  </div>
+
+  <script src="./Javascript/dashboard.js"></script>
+
+
+
+
+  <script>
+    function cerrarSesion() {
+      localStorage.clear();
+      window.location.href = "iniciarSesion.html";
+    }
+    function obtenerUsuario() {
+      const data = localStorage.getItem("usuario");
+      return data ? JSON.parse(data) : null;
+    }
+
+
+    const usuario = obtenerUsuario();
+    if (usuario) {
+      document.getElementById("nombreUsuario").textContent = usuario.nombre || usuario.name;
+      document.getElementById("correoUsuario").textContent = usuario.correo || usuario.email;
+
+    } else {
+      console.warn("No se encontro informacion del usuario.");
+    }
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>

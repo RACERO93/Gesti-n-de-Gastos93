@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vista General de Gastos</title>
+  <link rel="stylesheet" href="../styles_css/gastoGeneral.css">
+  <link rel="icon" href="logo.png">
+  <img src="logo.png" class="img" alt="Gastos" title="Gastos">
+</head>
+
+<body>
+
+  <h2>Gasto General</h2>
+
+  <div class="filtros">
+    <input type="text" id="filtroTitulo" placeholder="Buscar por titulo">
+    <select id="filtroCategoria">
+      <option value="">Todas las categorias</option>
+
+    </select>
+    <input type="date" id="filtroFecha">
+    <input type="number" id="filtroMontoExacto" placeholder="Monto exacto">
+    <input type="number" id="filtroMin" placeholder="Monto minimo">
+    <input type="number" id="filtroMax" placeholder="Monto maximo">
+
+    <select id="ordenarPor">
+      <option value="">Ordenar por...</option>
+      <option value="fecha">Fecha</option>
+      <option value="monto">Monto</option>
+    </select>
+    <select id="filtroMes">
+      <option value="">Todos los meses</option>
+
+      <option value="0">Enero</option>
+      <option value="1">Febrero</option>
+      <option value="2">Marzo</option>
+      <option value="3">Abril</option>
+      <option value="4">Mayo</option>
+      <option value="5">Junio</option>
+      <option value="6">Julio</option>
+      <option value="7">Agosto</option>
+      <option value="8">Septiembre</option>
+      <option value="9">Octubre</option>
+      <option value="10">Noviembre</option>
+      <option value="11">Diciembre</option>
+    </select>
+
+    <button id="btnFiltro" onclick="aplicarFiltros()">Aplicar Filtros</button>
+    <button id="btnGuardar" style="display: none;" onclick="actualizarGasto()">Guardar cambios</button>
+    <div id="mensajeError"
+      style="display:none; color: white; background-color: red; padding: 10px; margin: 10px 0; border-radius: 5px;">
+    </div>
+
+    <!-- <button onclick="buscar()">Buscar</button> -->
+    <br><br>
+    <a href="../menu.html">Volver</a>
+  </div>
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>Titulo</th>
+        <th>Categoria</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaGastos"></tbody>
+  </table>
+
+  <div id="modalEditar" class="modal" style="display:none;">
+
+    <div class="modal-content">
+      <!-- <div class="contentModal"><button class="btnModal" id="closeModal">x</button> -->
+      <button class="close" onclick="cerrarModalEditar()">&times;</button>
+      <h2>Editar Gasto</h2>
+      <form id="loginForm">
+        <form id="formEditarGasto">
+
+          <!-- el modal de editar  en gasto general -->
+          <input type="hidden" id="idEditar">             <!--id para crear el modal de editar-->
+
+          <label for="tituloEditar">Titulo:</label>
+          <input type="text" id="tituloEditar" required><br><br>
+          <label for="categoriaEditar">Categorias:</label>
+          <select id="categoriaEditar">
+
+            <option disabled selected>Seleccionar una Categoria</option>
+          </select><br><br>
+
+          <label for="montoEditar">Monto:</label>
+          <input type="number" id="montoEditar" required><br><br>
+
+          <label for="fechaEditar">Fecha:</label>
+          <input type="date" id="fechaEditar" required><br><br>
+
+          <button type="submit" .style="display: none;" style="text-align: center;">Guardar Cambios</button>
+        </form>
+      </form>
+    </div>
+  </div>
+  </div>
+
+  <script src="../Javascript/gastoGeneral.js"></script>
+
+  <!-- <script src="gastoGeneral.js"></script> -->
+  <!-- <script src="login.js"></script> -->
+
+</body>
+
+</html>

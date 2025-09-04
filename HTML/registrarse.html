@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro</title>
+  <link rel="stylesheet" href="../styles_css/registrarse.css">
+  <link rel="icon" href="logo.png">
+
+<body>
+  <div class="container">
+
+    <center> <img src="logo.png" width="80" height="100px" alt="SGG" class="d-block w-10" top="50"> </center>
+    <!-- <img src="logo.png" style="width:70px;"> -->
+    <h2>Registrar Usuario</h2>
+    <form id="registerForm">
+      <input type="text" id="nombre" placeholder="Nombre" required><br>
+      <input type="email" id="correo" placeholder="Correo" required><br>
+      <input type="password" id="contraseña" placeholder="Contraseña" required><br>
+      <input type="password" id="confirmarContrasena" placeholder="Confirmar contraseña" required>
+      <div class="error" id="mensajeError"></div>
+      <button type="submit">Registrar</button>
+    </form>
+  
+    
+    
+    <p>¿Ya tienes cuenta? <a href="../iniciarSesion.html">Inicia sesión</a></p>
+    <p id="mensajeError" style="color: red; display: none; font-weight: bold;"></p>
+
+    <script src="../Javascript/registerUser.js"></script>

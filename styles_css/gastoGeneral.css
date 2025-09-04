@@ -1,0 +1,86 @@
+body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background:linear-gradient() 
+}
+
+body {
+        background-color:  linear-gradient(rgb(59, 191, 59) rgb(113, 113, 240));
+        font-family: serif;
+}
+
+h2 {
+        text-align: center;
+        font-size: 36px;
+}
+
+
+.filtros {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+}
+
+.filtros input, .filtros select {
+        padding: 6px;
+        width: 200px;
+}
+
+table {
+        width: 100%;
+        border-collapse:collapse;
+        margin-top: 20px;
+        background: white;
+}
+
+th, td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+}
+
+th {
+        background-color: #007BFF;
+        color: white;
+        cursor: pointer;
+}
+
+tr:hover {
+        background-color: #f1f7ff;
+}
+
+button {
+        padding: 5px 10px;
+        margin: 2px;
+}
+.modal {
+        position:fixed; /* pa que quede el modal fijo */
+        z-index: 30;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+}
+.modal-content {
+        background-color: rgba(253, 252, 252, 0.979);
+        margin: 10% 29%;
+        padding: 30px;
+        width: 100%;
+        max-width: 500px;
+        border-radius: 15px;
+        border: 2px solid #ccc;
+}
+.close {
+        float: right;
+        font-size: 24px;
+        cursor: pointer;
+}
+.img{
+        display: flex;
+        width: 120px;
+        height: 160px;
+        margin: auto;
+        margin-top: 20px;
+}
