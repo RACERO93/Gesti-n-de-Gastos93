@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.href = "inicioSesion.html";
     return;
   }
-  // Trae los dastos de los usuario
+  // Traer los dastos de los usuario
   document.getElementById("nombre").value = usuario.name || "";
   document.getElementById("correo").value = usuario.email || "";
 

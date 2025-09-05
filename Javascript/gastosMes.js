@@ -13,7 +13,7 @@ const tbody = document.getElementById("tablaGastos");
 const mensajeError = document.getElementById("mensajeError");
 
 //VALIDAR SESION
-const usuario = JSON.parse(localStorage.getItem("usuario"));
+const usuario = JSON.parse(localStorage.getItem("usuario")); //convierte una cadena de texto a un formato JSON
 if (!usuario) {
   mensajeError.style.display = "block";
   mensajeError.style.backgroundColor = "red";
@@ -68,6 +68,7 @@ async function obtenerGastosDesdeAPI() {
     if (!res.ok) throw new Error("Error al obtener gastos");
     const datos = await res.json();
 
+    //Normalizar datos
     gastos = datos.map(normalizarGasto)
       .filter(g => g.userId === usuario.id);
 
@@ -200,13 +201,10 @@ async function agregarGasto() {
     alert("No se pudo agregar el gasto.");
   }
 
-
-
-
 }
 
 let gastoEditandoId = null;
-
+// consultar los gastos por id metodo get
 function iniciarEdicion(id) {
   try {
     fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`)
@@ -547,5 +545,48 @@ cargarCategoria();
 setTimeout(() => {
   mostrarCategorias();
 }, 200);
+
+
+
+
+
+// function iniciarEdicion(id) {
+//   try {
+//     fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`)
+//       .then(res => res.json())
+//       .then(data => {
+//         // click para abrir modal al btn de abrir modal
+//         document.getElementById("btnOpenModalGastos").click()
+//         // document.getElementById("btnOpenModalGastos").click()
+
+
+//         // Llama los datos modal Editar 
+
+//         document.getElementById("titulo").value = data.titulo || data.title;
+//         document.getElementById("descripcion").value = data.descripcion || data.description;
+//         document.getElementById("monto").value = data.monto || data.amount;
+//         document.getElementById("fecha").value = data.fecha || data.Date;
+//         // document.getElementById("categoria").value = gasto.categoryId;
+
+
+//         document.getElementById("tituloModal").innerText = "Editar Gasto"
+//         document.getElementById("btnAgregar").style.display = "none";
+//         document.getElementById("btnGuardar").style.display = "inline-block";
+//         // document.getElementById("btnCancelar").style.display = "inline-block";
+
+
+
+
+//         gastoEditandoId = id;
+
+//       })
+
+
+
+//   } catch (error) {
+//     console.error("Error al cargar gasto:", error)
+//   }
+
+// }
 
 

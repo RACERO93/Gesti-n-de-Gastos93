@@ -1,13 +1,12 @@
 document.getElementById('registerForm').addEventListener('submit', function (e) {
   e.preventDefault();
-  console.log('Se envio la peticion');
 
-  const nombre = document.getElementById('nombre').value.trim();        //Quitar los espacios al principio y al final
+  const nombre = document.getElementById('nombre').value.trim();
   const correo = document.getElementById('correo').value.trim();
   const contraseña = document.getElementById('contraseña').value.trim();
   const mensajeError = document.getElementById('mensajeError');
 
-  //  Validaciones
+  // Validaciones
   if (!nombre || !correo || !contraseña) {
     mensajeError.textContent = "Todos los campos son obligatorios.";
     return;
@@ -23,39 +22,51 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     return;
   }
 
-
-
-  // Si todo esta bien, ocultar el mensaje y registrar
-  mensajeError.style.display = "none";
-  registrarUsuario(nombre, correo, contraseña);
+  // Si todo está bien
+  mensajeError.textContent = "";
+  registrarUsuario(nombre, correo, contraseña, mensajeError);
 });
 
-
-function registrarUsuario(name, email, password) {
+async function registrarUsuario(name, email, password, mensajeError) {
   const usuario = { name, email, password };
+  console.log('Intentando registrar usuario:', usuario);
 
+  try {
+    // 1. Consultar todos los usuarios antes de registrar
+    const res = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/users");
+    if (!res.ok) throw new Error("Error al obtener los usuarios");
 
-  console.log('usuario ', usuario);
+    const usuarios = await res.json();
+    console.log("Usuarios obtenidos:", usuarios);
 
-    // 1  Consultar Todos Los Usuarios y crear un nuevo usuario 
-  fetch('https://demos.booksandbooksdigital.com.co/practicante/backend/users', {
-    method: 'POST',
-    body: JSON.stringify(usuario),  // convirtiendo un array en texto
-    headers: {
-      'Content-Type': 'application/json'
+    // 2. Validar si ya existe este usuario por correo
+    const existe = usuarios.some(u => u.email?.toLowerCase() === email.toLowerCase());
+    if (existe) {
+      mensajeError.textContent = "Este correo ya esta registrado.";
+      alert("Este correo ya esta registrado")
+      return;
     }
-  })
-  
-    .then(response => response.json())      // promesa
-    .then(data => {
-      console.log(data);
-      alert("Usuario creado ")
-      localStorage.clear();
-      window.location.href = 'iniciarSesion.html';
 
-    })
-    // .catch(error => {
-    //   console.error('Error al conectar con la API:', error);
-    // });
+    // 3. Si no existe, registrar el nuevo usuario
+    const resRegistro = await fetch('https://demos.booksandbooksdigital.com.co/practicante/backend/users', {
+      method: 'POST',
+      body: JSON.stringify(usuario),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!resRegistro.ok) throw new Error("Error al registrar usuario");
+
+    const data = await resRegistro.json();
+    console.log("Usuario creado:", data);
+
+    alert(" Usuario creado exitosamente");
+    
+    window.location.href = "iniciarSesion.html";
+
+  } catch (error) {
+    console.error('Error al conectar con la API:', error);
+    mensajeError.textContent = "Error al registrar el usuario.";
+  }
 }
-

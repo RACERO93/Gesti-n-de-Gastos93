@@ -1,6 +1,7 @@
 let gastos = [];
 
 function obtenerGastosDesdeAPI() {
+
   fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/expenses")
     .then(res => res.json())
     .then(data => {
@@ -9,8 +10,8 @@ function obtenerGastosDesdeAPI() {
       actualizarDashboard(gastos);
     })
     .catch(error => {
-      // console.error("Error al obtener los datos:", error);
-      // alert("No se pudo cargar la información del dashboard.");
+      console.error("Error al obtener los datos:", error);
+      
     });
 }
 
@@ -34,5 +35,5 @@ function actualizarDashboard(gastos) {
 }
 
 
-obtenerGastosDesdeAPI();
+document.addEventListener("DOMContentLoaded", obtenerGastosDesdeAPI)
 

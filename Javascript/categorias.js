@@ -1,12 +1,14 @@
+// const reactDom = require("react-dom");
+
 let categoriaEditandoId = null;
 
-async function mostrarCategoriasEnTabla() {
+async function mostrarCategoriasEnTabla() {  // para convertir la funcion en asincrona 
   const tabla = document.getElementById("tablaCategoria");       //traer el elemento de html id
   tabla.innerHTML = "";
   try {
     const res = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/categories");
     const categorias = await res.json();
-    categorias.forEach(cat => {
+    categorias.forEach(cat => {      //  para  recorrer a cada uno de los elementos
       const tr = document.createElement("tr");
       tr.innerHTML = `
       <td>${cat.id}</td>
@@ -32,21 +34,38 @@ function editarCategoria(id, nombre) {
   document.getElementById("myModal").style.display = "block";
 }
 
+
+
 async function agregarCategoria() {
   const name = document.getElementById("nuevaCategoria").value.trim();
   const mensaje = document.getElementById("mensajeCategoria");
   if (!name) {
-    mensaje.textContent = "Ingresa un nombre valido";
+
+    mensaje.textContent = "ingresar una categoria";
     mensaje.style.color = "red";
     return;
   }
   try {
+    //consultar categorias existente  
+    const resCategorias =await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/categories");
+    const categorias = await resCategorias.json();
+
+
+    // validar si ya existe o no
+    const existe = categorias.some(cat => cat.name.toLowerCase() === name.toLowerCase());
+
+    if(existe){
+      mensaje.textContent = "la categoria ya existe "
+      mensaje.style.color = "red";
+      return;
+    }
+    //  si no existe agrega la categoria
     const res = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/categories", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name })
     });
-    if (!res.ok) throw new Error("Error al agregar");
+    if (!res.ok) throw new Error("la categoria ya existe");
     mensaje.textContent = "Categoria agregada";
     alert("Categoria Agregada")
     mensaje.style.color = "green";
@@ -54,7 +73,7 @@ async function agregarCategoria() {
     mostrarCategoriasEnTabla();
     cerrarModal();
   } catch (error) {
-    mensaje.textContent = "Error al agregar";
+    mensaje.textContent = "la categoria ya existe";
     mensaje.style.color = "red";
   }
 }
@@ -64,7 +83,7 @@ async function actualizarCategoria() {
   const mensaje = document.getElementById("mensajeCategoria");
   if (!nombre || !categoriaEditandoId) {
 
-    mensaje.textContent = "Nombre invalido o sin categoría seleccionada";
+    mensaje.textContent = "Nombre invalido o sin categoria seleccionada";
     mensaje.style.color = "red";
     return;
   }
@@ -72,7 +91,7 @@ async function actualizarCategoria() {
     const res = await fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/categories/${categoriaEditandoId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: nombre })
+      body: JSON.stringify({ name: nombre })   // conviete un objeto o array en cadena de texto forma json
     });
     if (!res.ok) throw new Error("Error al actualizar");
     mensaje.textContent = "Categoria actualizada";

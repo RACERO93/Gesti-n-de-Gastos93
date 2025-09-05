@@ -49,7 +49,7 @@ function renderizarTabla(lista) {
 
 
   lista.forEach(g => {
-    const fila = document.createElement("tr");
+    fila = document.createElement("tr");
     fila.innerHTML = `
       <td>${g.titulo}</td>
       <td>${g.categoria}</td>
@@ -117,7 +117,7 @@ window.onclick = function (event) {
   if (event.target === modal) cerrarModalEditar();
 };
 function editarGasto(id) {
-  const gasto = gastos.find(g => g.id === id);
+  const gasto = gastos.find(g => g.id === id);  // pasra conseguir un unoco elemento con el find
   if (!gasto) {
     alert("Gasto no encontrado.");
     return;
