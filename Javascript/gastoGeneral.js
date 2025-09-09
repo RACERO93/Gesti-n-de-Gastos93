@@ -1,24 +1,37 @@
 let gastos = [];
-// obteniendo los gasto desde la api 
-function obtenerGastosDesdeAPI() {
-  fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/expenses")
-    .then(res => res.json())
-    .then(data => {
 
-      gastos = data.map(g => ({
-        id: g.id,
-        titulo: g.titulo || g.title || "Sin titulo",
-        categoria: g.categoria || g.category || g.categoryId || "Sin categoria",
-        monto: Number(g.monto || g.amount || 0),
-        fecha: g.fecha || g.date || ""
-      }));
-      renderizarTabla(gastos);
-    })
-    .catch(err => {
-      console.error("Error al cargar datos:", err);
-      alert("No se pudieron cargar los gastos.");
-    });
+// obtener los gatos desde las APIs
+async function obtenerGastosDesdeAPI() {
+  try {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (!usuario) {
+      alert("Debes iniciar sesión primero");
+      return;
+    }
+
+    const res = await fetch(
+      `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?userId=${usuario.id}`
+    );
+    if (!res.ok) throw new Error("Error al obtener gastos");
+
+    const data = await res.json();
+
+    gastos = data.map(g => ({
+      id: g.id,
+      userId: g.userId,
+      titulo: g.titulo || g.title || "Sin titulo",
+      categoria: g.categoria || g.category || g.categoryId || "Sin categoria",
+      monto: Number(g.monto || g.amount || 0),
+      fecha: g.fecha || g.date || ""
+    }));
+
+    renderizarTabla(gastos);
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+    alert("No se pudieron cargar los gastos.");
+  }
 }
+
 
 function aplicarFiltros() {
   const texto = document.getElementById("filtroTitulo").value.toLowerCase();
@@ -28,7 +41,7 @@ function aplicarFiltros() {
   const mes = document.getElementById("filtroMes").value;
 
   const filtrados = gastos
-    .filter(g => g.titulo.toLowerCase().includes(texto))
+    .filter(g => g.titulo.toLowerCase().includes(texto))    //para verfirificar si la cadena de texto es verdadero
     .filter(g => !categoria || g.categoria === categoria)
     .filter(g => g.monto >= min && g.monto <= max)
     .filter(g => mes === "" || new Date(g.fecha).getMonth() === parseInt(mes));
@@ -53,7 +66,7 @@ function renderizarTabla(lista) {
     fila.innerHTML = `
       <td>${g.titulo}</td>
       <td>${g.categoria}</td>
-      <td>$${g.monto.toFixed(2)}</td>
+      <td>$${g.monto.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
       <td>${new Date(g.fecha).toLocaleDateString()}</td>
       <td>
       <button onclick="editarGasto(${g.id})">Editar</button>
@@ -64,45 +77,6 @@ function renderizarTabla(lista) {
   });
 }
 
-
-
-
-//obtener  categoria
-const url = "https://.booksandbooksdigital.com.co/practicante/backend/categories";
-let categoriaAPI = [];
-async function cargarCategoria() {
-  try {
-    const respuestaCategoria = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/categories");
-
-    categoriaAPI = await respuestaCategoria.json();
-
-    // console.log("Categorias cargadas:", categoriaAPI);
-  } catch (error) {
-    console.error(" Error al traer las categorias:", error);
-  }
-}
-
-function mostrarCategorias() {
-
-  const categoriaFiltro = document.getElementById("filtroCategoria")
-  categoriaAPI.map((dato) => {
-    const option = document.createElement("option")
-
-
-
-    option.id = dato.id
-    option.text = dato.name
-    categoriaFiltro.appendChild(option)
-
-  })
-}
-cargarCategoria();
-
-setTimeout(() => {
-  mostrarCategorias();
-}, 200);
-
-obtenerGastosDesdeAPI();
 
 function abrirModalEditar() {
   document.getElementById("modalEditar").style.display = "block";
@@ -179,6 +153,44 @@ function eliminarGasto(id) {
     });
 }
 
+
+//obtener  categoria
+const url = "https://.booksandbooksdigital.com.co/practicante/backend/categories";
+let categoriaAPI = [];
+async function cargarCategoria() {
+  try {
+    const respuestaCategoria = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/categories");
+
+    categoriaAPI = await respuestaCategoria.json();
+
+    // console.log("Categorias cargadas:", categoriaAPI);
+  } catch (error) {
+    console.error(" Error al traer las categorias:", error);
+  }
+}
+
+function mostrarCategorias() {
+
+  const categoriaFiltro = document.getElementById("filtroCategoria")
+  categoriaAPI.map((dato) => {
+    const option = document.createElement("option")
+
+
+
+    option.id = dato.id
+    option.text = dato.name
+    categoriaFiltro.appendChild(option)
+
+  })
+}
+cargarCategoria();
+
+setTimeout(() => {
+  mostrarCategorias();
+}, 200);
+
+obtenerGastosDesdeAPI();
+
 function mostrarCategorias() {
   const categoriaFiltro = document.getElementById("filtroCategoria");
   const categoriaEditar = document.getElementById("categoriaEditar");
@@ -196,3 +208,8 @@ function mostrarCategorias() {
     categoriaEditar.appendChild(optionEditar);
   });
 }
+
+
+
+
+

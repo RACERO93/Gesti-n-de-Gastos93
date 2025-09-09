@@ -9,7 +9,7 @@ body {
     background: linear-gradient(0deg, rgba(251, 251, 251, 0) 34%, rgba(45, 101, 253, 1) 77%);
     font-family: serif;
   }
-
+  
   .container {
     width: 400px;
     padding: 30px;
@@ -36,15 +36,18 @@ body {
   }
 
 
-  .submit-btn {
+  .btnIngresar{
     background-color: #2d65fd;
     color: white;
     border: none;
     padding: 10px 0;
     cursor: pointer;
     font-size: 15px;
-    border-radius: 5px;
-    width: 100%;
+    border-radius: 30px;
+    width: 50%;
+  }
+  .btnIngresar:hover{
+    background-color: #011754;
   }
 
   .error {

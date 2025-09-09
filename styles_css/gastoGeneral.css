@@ -1,13 +1,12 @@
 body {
         font-family: Arial, sans-serif;
         padding: 20px;
-        background:linear-gradient() 
+        background:  rgb(159, 215, 235) 90%;
+        font-family: serif;
+
 }
 
-body {
-        background-color:  linear-gradient(rgb(59, 191, 59) rgb(113, 113, 240));
-        font-family: serif;
-}
+
 
 h2 {
         text-align: center;

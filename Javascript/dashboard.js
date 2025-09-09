@@ -1,39 +1,53 @@
+
 let gastos = [];
 
-function obtenerGastosDesdeAPI() {
+// Traer gastos desde API
+async function obtenerGastosDesdeAPI(filtrarPorUsuario = true) {
+  try {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-  fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/expenses")
-    .then(res => res.json())
-    .then(data => {
-      // Filtrar solo gastos validos (con monto numrico y fecha valida)
-      gastos = data.filter(g => !isNaN(parseFloat(g.monto)) && g.fecha);
-      actualizarDashboard(gastos);
-    })
-    .catch(error => {
-      console.error("Error al obtener los datos:", error);
-      
-    });
+    // Si hay usuario y queremos filtrar por el  userId
+    let url = "https://demos.booksandbooksdigital.com.co/practicante/backend/expenses";
+    if (filtrarPorUsuario && usuario) {
+      url += `?userId=${usuario.id}`;   //para llamar el expenses y el usuario id desde la api
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Error en la API");
+
+    const data = await res.json();
+    console.log("Gasto Recibidos", data);
+    
+
+    
+    gastos = data.filter(g => !isNaN(parseFloat(g.amount)) && g.date);
+
+    actualizarDashboard(gastos);
+  } catch (error) {
+    console.error("Error al obtener los datos:", error);
+  }
 }
 
+// Actualizar dashboard
 function actualizarDashboard(gastos) {
   if (!gastos.length) return;
 
   // Ordenar de mayor a menor por monto
-  const gastosOrdenados = [...gastos].sort((a, b) => parseFloat(b.monto) - parseFloat(a.monto));
+  const gastosOrdenados = [...gastos].sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
 
   const gastoMasAlto = gastosOrdenados[0];
   const gastoMasBajo = gastosOrdenados[gastosOrdenados.length - 1];
 
-  
-  const totalGeneral = gastos.reduce((acc, g) => acc + parseFloat(g.monto), 0);
+  const totalGeneral = gastos.reduce((acc, g) => acc + parseFloat(g.amount), 0);
 
   // Mostrar en HTML
-  // document.querySelector()hace llamdo del primer elemento que necesita en html
-  document.querySelector("#gastoAlto span").textContent = `$${parseFloat(gastoMasAlto.monto).toLocaleString('es-CO', {minimumFractionDigits:2})}`;
-  document.querySelector("#gastoBajo span").textContent = `$${parseFloat(gastoMasBajo.monto).toLocaleString('es-CO', {minimumFractionDigits:2})}`;
-  document.querySelector("#totalMes span").textContent = `$${totalGeneral.toLocaleString('es-CO',{minimumFractionDigits:2})}`;
+  document.querySelector("#gastoAlto span").textContent =
+    `$${parseFloat(gastoMasAlto.amount).toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+  document.querySelector("#gastoBajo span").textContent =
+    `$${parseFloat(gastoMasBajo.amount).toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+  document.querySelector("#totalMes span").textContent =
+    `$${totalGeneral.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
 }
 
-
-document.addEventListener("DOMContentLoaded", obtenerGastosDesdeAPI)
-
+// Al cargar la pagina dashboard SOLO del usuario
+document.addEventListener("DOMContentLoaded", () => obtenerGastosDesdeAPI(true));

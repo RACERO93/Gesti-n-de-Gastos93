@@ -1,3 +1,5 @@
+// declarando la constante con todos los meses del año 
+
 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
   "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
@@ -26,18 +28,22 @@ if (!usuario) {
 } else {
   mensajeError.style.display = "none"
 }
-// Mostrar botones de meses
+// Mostrar botones de los meses
 tbody.innerHTML = "";
-meses.forEach((mes, i) => {
-  const btn = document.createElement("button");
+meses.forEach((mes, i) => {              // recore el array de los meses y el indice de cada mes 0 a 11
+  const btn = document.createElement("button");   // se crea un boton para cada mes
   btn.textContent = mes;
-  if (i === mesSeleccionado) btn.classList.add("activo");
-  btn.onclick = () => {
-    mesSeleccionado = i;
-    document.querySelectorAll(".meses button").forEach(b => b.classList.remove("activo"));
-    btn.classList.add("activo");
+  if (i === mesSeleccionado) btn.classList.add("activo");   //si el boton corresponde al mes seleccionado añade la clase css (Activi)
+  btn.onclick = () => {    //define qiue pasa alcer clic en el boton 
+    mesSeleccionado = i; //actualiza el mes seleccionado al indicle clicleado 
+
+    // llama rodos los bones del mes pero solo queda activo el que se le da clic
+    document.querySelectorAll(".meses button").forEach(b => b.classList.remove("activo")); 
+    btn.classList.add("activo"); //para  activar visualmente el poton pulsado
     obtenerGastosDesdeAPI();
   };
+
+  // inserta el boton en el contenedor de meses
   mesesContainer.appendChild(btn);
 });
 
@@ -64,13 +70,14 @@ async function obtenerGastosDesdeAPI() {
     return;
   }
   try {
-    const res = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/expenses");
+    // Para llamar los gastos de cada usuarios
+    const res = await fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?userId=${usuario.id}`);
     if (!res.ok) throw new Error("Error al obtener gastos");
     const datos = await res.json();
 
     //Normalizar datos
     gastos = datos.map(normalizarGasto)
-      .filter(g => g.userId === usuario.id);
+      // .filter(g => g.userId === usuario.id);
 
     filtrarGastos();
   } catch (err) {
@@ -228,9 +235,6 @@ function iniciarEdicion(id) {
         document.getElementById("btnAgregar").style.display = "none";
         document.getElementById("btnGuardar").style.display = "inline-block";
         // document.getElementById("btnCancelar").style.display = "inline-block";
-
-
-
 
         gastoEditandoId = id;
 
@@ -547,46 +551,5 @@ setTimeout(() => {
 }, 200);
 
 
-
-
-
-// function iniciarEdicion(id) {
-//   try {
-//     fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`)
-//       .then(res => res.json())
-//       .then(data => {
-//         // click para abrir modal al btn de abrir modal
-//         document.getElementById("btnOpenModalGastos").click()
-//         // document.getElementById("btnOpenModalGastos").click()
-
-
-//         // Llama los datos modal Editar 
-
-//         document.getElementById("titulo").value = data.titulo || data.title;
-//         document.getElementById("descripcion").value = data.descripcion || data.description;
-//         document.getElementById("monto").value = data.monto || data.amount;
-//         document.getElementById("fecha").value = data.fecha || data.Date;
-//         // document.getElementById("categoria").value = gasto.categoryId;
-
-
-//         document.getElementById("tituloModal").innerText = "Editar Gasto"
-//         document.getElementById("btnAgregar").style.display = "none";
-//         document.getElementById("btnGuardar").style.display = "inline-block";
-//         // document.getElementById("btnCancelar").style.display = "inline-block";
-
-
-
-
-//         gastoEditandoId = id;
-
-//       })
-
-
-
-//   } catch (error) {
-//     console.error("Error al cargar gasto:", error)
-//   }
-
-// }
 
 

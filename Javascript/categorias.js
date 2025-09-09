@@ -1,5 +1,3 @@
-// const reactDom = require("react-dom");
-
 let categoriaEditandoId = null;
 
 async function mostrarCategoriasEnTabla() {  // para convertir la funcion en asincrona 

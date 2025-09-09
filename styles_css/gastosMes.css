@@ -25,11 +25,44 @@
         
     }
 
+    #btnOpenModalGastos, .category{
+        border-radius: 5px;
+        font-size: 18px;
+        font-family:  sans-serif;
+        position:absolute;
+        border: none;
+        text-decoration: underline;
+        border: 1px solid #ccc;
+        
+        
+    }
+        
+    
+
+    #btnOpenModalGastos:hover{
+        background-color:  #626060;
+        font-size: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        color: white;
+        
+    }
+    .category:hover{
+        background-color: #626060;
+        font-size: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        color: white;
+        
+    }
+
     .meses {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         margin: 20px 0;
+    
     }
 
     .meses button {
