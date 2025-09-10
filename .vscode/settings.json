@@ -1,3 +1,14 @@
+// {
+//     "liveServer.settings.port": 5501
+// }
 {
-    "liveServer.settings.port": 5501
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "files.autoSave": "onWindowChange",
+    "editor.minimap.enabled": false,
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "One Dark Pro",
+    "liveServer.settings.wait": 500,
+    "prettier.singleQuote": true,
+    "prettier.semi": false
 }
