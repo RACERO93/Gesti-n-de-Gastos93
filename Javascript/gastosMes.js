@@ -38,7 +38,7 @@ meses.forEach((mes, i) => {              // recore el array de los meses y el in
     mesSeleccionado = i; //actualiza el mes seleccionado al indicle clicleado 
 
     // llama rodos los bones del mes pero solo queda activo el que se le da clic
-    document.querySelectorAll(".meses button").forEach(b => b.classList.remove("activo")); 
+    document.querySelectorAll(".meses button").forEach(b => b.classList.remove("activo"));
     btn.classList.add("activo"); //para  activar visualmente el poton pulsado
     obtenerGastosDesdeAPI();
   };
@@ -77,7 +77,7 @@ async function obtenerGastosDesdeAPI() {
 
     //Normalizar datos
     gastos = datos.map(normalizarGasto)
-      // .filter(g => g.userId === usuario.id);
+    // .filter(g => g.userId === usuario.id);
 
     filtrarGastos();
   } catch (err) {
@@ -217,76 +217,68 @@ function iniciarEdicion(id) {
     fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`)
       .then(res => res.json())
       .then(data => {
-        // click para abrir modal al btn de abrir modal
-        document.getElementById("btnOpenModalGastos").click()
-        // document.getElementById("btnOpenModalGastos").click()
+        // Abrir modal
+        document.getElementById("btnOpenModalGastos").click();
 
+        // Llenar campos del modal
+        document.getElementById("titulo").value = data.title || data.titulo;
+        document.getElementById("descripcion").value = data.description || data.descripcion;
+        document.getElementById("monto").value = data.amount || data.monto;
+        document.getElementById("fecha").value = data.date || data.fecha;
+        document.getElementById("categoria").value = data.categoryId || data.categoria;
 
-        // Llama los datos modal Editar 
-
-        document.getElementById("titulo").value = data.titulo || data.title;
-        document.getElementById("descripcion").value = data.descripcion || data.description;
-        document.getElementById("monto").value = data.monto || data.amount;
-        document.getElementById("fecha").value = data.fecha || data.Date;
-        // document.getElementById("categoria").value = gasto.categoryId;
-
-
-        document.getElementById("tituloModal").innerText = "Editar Gasto"
+        // Cambiar titulos y botones
+        document.getElementById("tituloModal").innerText = "Editar Gasto";
         document.getElementById("btnAgregar").style.display = "none";
         document.getElementById("btnGuardar").style.display = "inline-block";
-        // document.getElementById("btnCancelar").style.display = "inline-block";
-
-        gastoEditandoId = id;
-
-      })
 
 
-
+        // guardar id del gasto en edición
+        gastoEditandoId = id; 
+      });
   } catch (error) {
-    console.error("Error al cargar gasto:", error)
+    console.error("Error al cargar gasto:", error);
   }
-
 }
 
 
 function cancelarEdicion() {
-  // Limpiar campos del formulario
   document.getElementById("titulo").value = "";
   document.getElementById("descripcion").value = "";
   document.getElementById("monto").value = "";
   document.getElementById("categoria").value = "";
   document.getElementById("fecha").value = "";
 
-  // Restaurar botones
   document.getElementById("btnAgregar").style.display = "inline-block";
-  document.getElementById("btnGuardar").style.display = "inlene-block";
-  document.getElementById("btnCancelar").style.display = "none";
-  document.getElementById("modalEditar").style.display = "inlne-block";
+  document.getElementById("btnGuardar").style.display = "none";
 
-  // Resetear ID de edición
   gastoEditandoId = null;
 
-  // Ocultar errores si hay
   const mensajeError = document.getElementById("mensajeError");
   if (mensajeError) mensajeError.style.display = "none";
 }
 
 function actualizarGasto() {
   if (!validarFormularioGasto()) return;
-  const titulo = document.getElementById("titulo").value;
-  const descripcion = document.getElementById("descripcion").value;
-  const monto = parseFloat(document.getElementById("monto")).value;
+
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  if (!usuario) return alert("no hay sesion iniciada");
+
+  const titulo = document.getElementById("titulo").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  const monto = parseFloat(document.getElementById("monto").value);
   const fecha = document.getElementById("fecha").value;
   const categoria = parseInt(document.getElementById("categoria").value);
 
   const gastoActualizado = {
+    userId: usuario.id,
     title: titulo,
     description: descripcion,
     amount: monto,
     date: fecha,
-    // categoryId: categoria
-
+    categoryId: categoria
   };
+  
 
   fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${gastoEditandoId}`, {
     method: "PUT",
@@ -300,26 +292,21 @@ function actualizarGasto() {
     .then(() => {
       alert("Gasto actualizado correctamente");
 
-      // Limpiar formulario y restaurar botones
-      document.getElementById("btnAgregar").style.display = "inline-block";
-      document.getElementById("btnGuardar").style.display = "none";
-      document.getElementById("titulo").value = "";
-      document.getElementById("descripcion").value = "";
-      document.getElementById("monto").value = "";
-      document.getElementById("fecha").value = "";
-      document.getElementById("categoria").value = "";
+      // Cerrar modal
+      const modal = document.querySelector(".modalGastos");
+      modal.style.display = "none";
 
-      gastoEditandoId = null;
+      // Restaurar formulario
+      cancelarEdicion();
+
+      // Recargar gastos en pantalla
       obtenerGastosDesdeAPI();
-      const modal = document.querySelector(".modalGastos")
-
-      modal.style.display = "none"
     })
     .catch(err => {
       console.error("Error:", err);
       alert("No se pudo actualizar el gasto.");
     });
-}
+  }
 
 async function agregarCategoria() {
   const name = document.getElementById("nuevaCategoria").value.trim();
@@ -549,6 +536,18 @@ cargarCategoria();
 setTimeout(() => {
   mostrarCategorias();
 }, 200);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

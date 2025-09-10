@@ -8,12 +8,6 @@ document.getElementById('perfilForm').addEventListener('submit', function (e) {
   const id = usuario.id;
 
 
-
-  //    if (!id) {
-  //      alert("No se pudo obtener el ID del usuario.");
-  //      return;
-  //    }
-
   perfil(id, nombre, correo, contraseña);
 });
 
@@ -33,80 +27,50 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("contraseña").value = "";
 });
 
+//  ACTUALIZAR USUARIO
+async function perfil(id, nombre, correo, contraseña) {
+  try {
+    // Consultar todos los usuarios de la API
+    const resUsuarios = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/users");
+    if (!resUsuarios.ok) throw new Error("Error al obtener usuarios");
+    const listaUsuarios = await resUsuarios.json();
 
-//  ACTUALIZAR USUARIO
-function perfil(id, nombre, correo, contraseña) {
-  fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/users/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      // "Authorization": "Bearer TU_TOKEN_AQUI"
-    },
-    body: JSON.stringify({
-      name: nombre,
-      email: correo,
-      password: contraseña
-    })
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Error al modificar perfil");
-      }
-      return response.json();
-    })
-    .then(usuario => {
-      if (usuario) {
-        localStorage.setItem('usuario', JSON.stringify(usuario));
-        localStorage.setItem('autenticado', 'true');
-        alert("Perfil editado con Exito");
-        window.location.href = 'menu.html';
-      }
-    })
-    .catch(error => {
-      console.error("Error al editar usuario:", error);
-      alert("Hubo un error al editar el perfil.");
-    });
-}
-
-
-
-// ELIMINAR CUENTA 
-
-
-document.getElementById('eliminarUsuario').addEventListener('click', function () {
-  const usuario = JSON.parse(localStorage.getItem('usuario'));
-  const id = usuario.id;
-
-
-
-  if (confirm("perdera toda su informacion")) {
-    eliminarUsuario(id);
-  }
-});
-
-function eliminarUsuario(id) {
-  fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/users/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      // "Authorization": "Bearer TU_TOKEN_AQUI"
+    //  Verificar si el correo ya esta en uso por otro usuario
+    const correoExistente = listaUsuarios.find(u => u.email === correo && u.id !== id);
+    if (correoExistente) {
+      alert(" El correo ya esta registrado por otro usuario.");
+      return; 
     }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Error al eliminar el usuario.");
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data) {
-        alert("Cuenta eliminada correctamente.");
-        localStorage.clear();
-        window.location.href = 'iniciarSesion.html';
-      }
-    })
-    .catch(error => {
-      console.error("Error al eliminar el usuario:", error);
-      alert("Hubo un error al eliminar la cuenta.");
+
+    //  Si no existe, actualizar usuario
+    const response = await fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/users/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer TU_TOKEN_AQUI"
+      },
+      body: JSON.stringify({
+        name: nombre,
+        email: correo,
+        password: contraseña
+      })
     });
+
+    if (!response.ok) {
+      throw new Error("Error al modificar perfil");
+    }
+
+    const usuario = await response.json();
+
+    if (usuario) {
+      localStorage.setItem('usuario', JSON.stringify(usuario));
+      localStorage.setItem('autenticado', 'true');
+      alert(" Perfil editado con éxito");
+      // Redirigir a Menú
+      window.location.href = '../menu.html';
+    }
+  } catch (error) {
+    console.error("Error al editar usuario:", error);
+    alert("Hubo un error al editar el perfil.");
+  }
 }

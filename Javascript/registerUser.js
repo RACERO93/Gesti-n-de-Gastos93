@@ -22,7 +22,7 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     return;
   }
 
-  // Si todo está bien
+
   mensajeError.textContent = "";
   registrarUsuario(nombre, correo, contraseña, mensajeError);
 });
@@ -63,7 +63,9 @@ async function registrarUsuario(name, email, password, mensajeError) {
 
     alert(" Usuario creado exitosamente");
     
-    window.location.href = "iniciarSesion.html";
+
+    
+      window.location.href = "../iniciarSesion.html";
 
   } catch (error) {
     console.error('Error al conectar con la API:', error);
