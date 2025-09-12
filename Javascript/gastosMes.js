@@ -4,9 +4,6 @@ const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
   "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 let gastos = [];
-
-
-
 let mesSeleccionado = new Date().getMonth(); //para identificar los meses por numeros desde 0
 let idEditando = null;
 
@@ -29,30 +26,41 @@ if (!usuario) {
   mensajeError.style.display = "none"
 }
 // Mostrar botones de los meses
-tbody.innerHTML = "";
-meses.forEach((mes, i) => {              // recore el array de los meses y el indice de cada mes 0 a 11
-  const btn = document.createElement("button");   // se crea un boton para cada mes
-  btn.textContent = mes;
-  if (i === mesSeleccionado) btn.classList.add("activo");   //si el boton corresponde al mes seleccionado añade la clase css (Activi)
-  btn.onclick = () => {    //define qiue pasa alcer clic en el boton 
-    mesSeleccionado = i; //actualiza el mes seleccionado al indicle clicleado 
+function cargarMeses() {
+  mesesContainer.innerHTML = "";
+  meses.forEach((mes, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = mes;
+    btn.classList.add("btnMes");
+    if (i === mesSeleccionado) btn.classList.add("activo");
 
-    // llama rodos los bones del mes pero solo queda activo el que se le da clic
-    document.querySelectorAll(".meses button").forEach(b => b.classList.remove("activo"));
-    btn.classList.add("activo"); //para  activar visualmente el poton pulsado
-    obtenerGastosDesdeAPI();
-  };
+    btn.onclick = () => {
+      mesSeleccionado = i;
+      document.querySelectorAll("#mesesContainer button").forEach(b => b.classList.remove("activo"));
+      btn.classList.add("activo");
+      onter
+      filtrarGastos();
+    };
 
-  // inserta el boton en el contenedor de meses
-  mesesContainer.appendChild(btn);
+    mesesContainer.appendChild(btn);
+  });
+}
+
+// para mostrar los botones de los meses
+document.addEventListener("DOMContentLoaded", () => {
+  cargarMeses();
+  obtenerGastosDesdeAPI();
+  cargarCategorias();
 });
+
+
 
 //   FUNCION PARA NORMALIZAR DATOS DE LA API 
 function normalizarGasto(gasto) {
   return {
     id: gasto.id || null,
     userId: gasto.userId,
-    categoria: gasto.categoria || gasto.categoryId || gasto.categoryId,
+    categoria: gasto.categoria || gasto.categoryId,
     titulo: gasto.titulo || gasto.title,
     descripcion: gasto.descripcion || gasto.description,
     monto: isNaN(Number(gasto.monto || gasto.amount)) ? 0 : Number(gasto.monto || gasto.amount),
@@ -88,21 +96,25 @@ async function obtenerGastosDesdeAPI() {
 }
 
 function filtrarGastos() {
-  const tituloFiltro = document.getElementById("filtroTitulo").value.toLowerCase();
-  const categoriaFiltro = document.getElementById("filtroCategoria").value;
-  const min = parseFloat(document.getElementById("filtroMin").value);
-  const max = parseFloat(document.getElementById("filtroMax").value);
+  const tituloFiltro = document.getElementById("filtroTitulo")?.value.toLowerCase() || "";
+  const categoriaFiltro = document.getElementById("filtroCategoria")?.value || "";
+  const min = parseFloat(document.getElementById("filtroMin")?.value) || 0;
+  const max = parseFloat(document.getElementById("filtroMax")?.value) || Infinity;
+  const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
 
   const filtrados = gastos
     .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
     .filter(g => g.titulo.toLowerCase().includes(tituloFiltro))
-    .filter(g => categoriaFiltro === "" || g.categoria === categoriaFiltro)
-    .filter(g => isNaN(min) || g.monto >= min)
-    .filter(g => isNaN(max) || g.monto <= max)
+    .filter(g => !categoriaFiltro || g.categoria == categoriaFiltro || g.categoryId == categoriaFiltro)
+    .filter(g => g.monto >= min && g.monto <= max)
+    // .filter(g => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
+    .filter(g => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
     .sort((a, b) => a.id - b.id);
 
   Tabla(filtrados);
 }
+
+
 function limpiarFiltros() {
   document.getElementById("filtroTitulo").value = "";
   document.getElementById("filtroCategoria").value = "";
@@ -234,7 +246,7 @@ function iniciarEdicion(id) {
 
 
         // guardar id del gasto en edición
-        gastoEditandoId = id; 
+        gastoEditandoId = id;
       });
   } catch (error) {
     console.error("Error al cargar gasto:", error);
@@ -278,7 +290,7 @@ function actualizarGasto() {
     date: fecha,
     categoryId: categoria
   };
-  
+
 
   fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${gastoEditandoId}`, {
     method: "PUT",
@@ -306,7 +318,7 @@ function actualizarGasto() {
       console.error("Error:", err);
       alert("No se pudo actualizar el gasto.");
     });
-  }
+}
 
 async function agregarCategoria() {
   const name = document.getElementById("nuevaCategoria").value.trim();
@@ -405,11 +417,20 @@ function Tabla(lista) {
     return;
   }
 
-  lista.forEach((gasto) => {
+  
+  lista.forEach(gasto => {
+    //verifia que el ide de categoria sea igual al de gasto.cateroria para mostrar el nombre de la categoria y no el id.
+
+    const categoria = categoriaAPI.find(cat => cat.id === gasto.categoria);
+
+  // Si lo encuentra, usar el nombre; si no, poner 'Sin categoría'
+  const nombreCategoria = categoria ? categoria.name : 'Sin categoría';
+    
+  
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${gasto.titulo}</td>
-      <td>${gasto.categoria}</td>
+      <td>${nombreCategoria}</td>
       <td>$${Number(gasto.monto).toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
       <td>${new Date(gasto.fecha).toLocaleDateString('es-CO')}</td>
       <td>
@@ -503,6 +524,8 @@ async function cargarCategoria() {
 
 
     categoriaAPI = await respuestaCategoria.json();
+  
+  
 
 
     // console.log("Categorias cargadas:", categoriaAPI);
@@ -531,6 +554,8 @@ function mostrarCategorias() {
   })
 }
 
+
+
 cargarCategoria();
 
 setTimeout(() => {
@@ -539,6 +564,59 @@ setTimeout(() => {
 
 
 
+// -------------------------------------------------
+
+
+function abrirModal(id) {
+  document.getElementById(id).style.display = "flex";
+}
+function cerrarModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+window.onclick = function (e) {
+  document.querySelectorAll(".modal").forEach(modal => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+}
+
+
+
+
+function aplicarFiltros() {
+  const tituloFiltro = document.getElementById("filtroTitulo");
+  const categoriaFiltro = document.getElementById("filtroCategoria").value;
+  const min = parseFloat(document.getElementById("filtroMin").value);
+  const max = parseFloat(document.getElementById("filtroMax").value);
+  const fechaFiltro = document.getElementById("filtroFecha").value; // nuevo
+  console.log( "este es el valor de titulo",  tituloFiltro)
+
+  const filtrados = gastos
+    // solo mostrar los del mes actual
+    .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
+    // filtro por título
+    .filter(g => g.titulo.includes(tituloFiltro))
+    // filtro por categoría (si no está vacío)
+    .filter(g => categoriaFiltro === "" || g.categoria == categoriaFiltro)
+    // filtro por monto mínimo
+    .filter(g => isNaN(min) || g.monto >= min)
+    // filtro por monto máximo
+    .filter(g => isNaN(max) || g.monto <= max)
+    // filtro por fecha exacta (si se ingresa)
+   
+    // ordenar por ID para mantener consistencia
+    .sort((a, b) => a.id - b.id);
+
+  Tabla(filtrados);
+}
+
+function limpiarFiltros() {
+  document.getElementById("filtroTitulo").value = "";
+  document.getElementById("filtroCategoria").value = "";
+  document.getElementById("filtroMin").value = "";
+  document.getElementById("filtroMax").value = "";
+  document.getElementById("filtroFecha").value = "";
+  filtrarGastos();
+}
 
 
 
@@ -552,3 +630,43 @@ setTimeout(() => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function aplicarFiltros() {
+//   const tituloFiltro = document.getElementById("filtroTitulo")?.value.trim().toLowerCase() || "";
+//   const categoriaFiltro = document.getElementById("filtroCategoria")?.value || "";
+//   const min = parseFloat(document.getElementById("filtroMin")?.value) || 0;
+//   const max = parseFloat(document.getElementById("filtroMax")?.value) || Infinity;
+//   const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
+
+//   const filtrados = gastos
+//     // Solo gastos del mes seleccionado
+//     .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
+//     // Filtros aplicados
+//     .filter(g => {
+//       const coincideTitulo = !tituloFiltro || (g.titulo && g.titulo.toLowerCase().includes(tituloFiltro));
+//       const coincideCategoria = !categoriaFiltro || (g.categoria == categoriaFiltro || g.categoryId == categoriaFiltro);
+//       const coincideMonto = g.monto >= min && g.monto <= max;
+//       const coincideFecha = !fechaFiltro || (g.fecha && g.fecha.startsWith(fechaFiltro));
+
+//       return coincideTitulo && coincideCategoria && coincideMonto && coincideFecha;
+//     })
+//     .sort((a, b) => a.id - b.id);
+
+//   Tabla(filtrados);
+
+//   // Cerrar modal de filtros si existe
+//   const modalFiltros = document.getElementById("modalFiltros");
+//   if (modalFiltros) modalFiltros.style.display = "none";
+// }
