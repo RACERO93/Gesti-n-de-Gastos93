@@ -43,7 +43,6 @@ th, td {
 th {
         background-color: #007BFF;
         color: white;
-        cursor: pointer;
 }
 
 tr:hover {

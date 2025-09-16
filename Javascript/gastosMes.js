@@ -38,7 +38,7 @@ function cargarMeses() {
       mesSeleccionado = i;
       document.querySelectorAll("#mesesContainer button").forEach(b => b.classList.remove("activo"));
       btn.classList.add("activo");
-      onter
+     
       filtrarGastos();
     };
 
@@ -537,7 +537,7 @@ async function cargarCategoria() {
 
 function mostrarCategorias() {
 
-  const categoria = document.getElementById("categoria")
+  const categoria = document.getElementById("gastoCategoria")
   const categoriaFiltro = document.getElementById("filtroCategoria")
   categoriaAPI.map((dato) => {
     const option1 = document.createElement("option")
@@ -567,56 +567,58 @@ setTimeout(() => {
 // -------------------------------------------------
 
 
-function abrirModal(id) {
-  document.getElementById(id).style.display = "flex";
-}
-function cerrarModal(id) {
-  document.getElementById(id).style.display = "none";
-}
-window.onclick = function (e) {
-  document.querySelectorAll(".modal").forEach(modal => {
-    if (e.target === modal) modal.style.display = "none";
-  });
-}
+// function abrirModal(id) {
+//   document.getElementById(id).style.display = "flex";
+// }
+// function cerrarModal(id) {
+//   document.getElementById(id).style.display = "none";
+// }
+// window.onclick = function (e) {
+//   document.querySelectorAll(".modal").forEach(modal => {
+//     if (e.target === modal) modal.style.display = "none";
+//   });
+// }
 
 
 
 
-function aplicarFiltros() {
-  const tituloFiltro = document.getElementById("filtroTitulo");
-  const categoriaFiltro = document.getElementById("filtroCategoria").value;
-  const min = parseFloat(document.getElementById("filtroMin").value);
-  const max = parseFloat(document.getElementById("filtroMax").value);
-  const fechaFiltro = document.getElementById("filtroFecha").value; // nuevo
-  console.log( "este es el valor de titulo",  tituloFiltro)
 
-  const filtrados = gastos
-    // solo mostrar los del mes actual
-    .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
-    // filtro por título
-    .filter(g => g.titulo.includes(tituloFiltro))
-    // filtro por categoría (si no está vacío)
-    .filter(g => categoriaFiltro === "" || g.categoria == categoriaFiltro)
-    // filtro por monto mínimo
-    .filter(g => isNaN(min) || g.monto >= min)
-    // filtro por monto máximo
-    .filter(g => isNaN(max) || g.monto <= max)
-    // filtro por fecha exacta (si se ingresa)
+
+// function aplicarFiltros() {
+//   const tituloFiltro = document.getElementById("filtroTitulo");
+//   const categoriaFiltro = document.getElementById("gastoCategoria").value;
+//   const min = parseFloat(document.getElementById("filtroMin").value);
+//   const max = parseFloat(document.getElementById("filtroMax").value);
+//   const fechaFiltro = document.getElementById("filtroFecha").value; // nuevo
+//   console.log( "este es el valor de titulo",  tituloFiltro)
+
+//   const filtrados = gastos
+//     // solo mostrar los del mes actual
+//     .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
+//     // filtro por título
+//     .filter(g => g.titulo.includes(tituloFiltro))
+//     // filtro por categoría (si no está vacío)
+//     .filter(g => gastoCategoria === "" || g.categoria == gastoCategoria)
+//     // filtro por monto mínimo
+//     .filter(g => isNaN(min) || g.monto >= min)
+//     // filtro por monto máximo
+//     .filter(g => isNaN(max) || g.monto <= max)
+//     // filtro por fecha exacta (si se ingresa)
    
-    // ordenar por ID para mantener consistencia
-    .sort((a, b) => a.id - b.id);
+//     // ordenar por ID para mantener consistencia
+//     .sort((a, b) => a.id - b.id);
 
-  Tabla(filtrados);
-}
+//   Tabla(filtrados);
+// }
 
-function limpiarFiltros() {
-  document.getElementById("filtroTitulo").value = "";
-  document.getElementById("filtroCategoria").value = "";
-  document.getElementById("filtroMin").value = "";
-  document.getElementById("filtroMax").value = "";
-  document.getElementById("filtroFecha").value = "";
-  filtrarGastos();
-}
+// function limpiarFiltros() {
+//   document.getElementById("filtroTitulo").value = "";
+//   document.getElementById("gastoCategoria").value = "";
+//   document.getElementById("filtroMin").value = "";
+//   document.getElementById("filtroMax").value = "";
+//   document.getElementById("filtroFecha").value = "";
+//   filtrarGastos();
+// }
 
 
 

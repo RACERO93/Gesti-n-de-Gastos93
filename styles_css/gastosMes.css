@@ -115,15 +115,20 @@
         padding: 8px;
         border: 1px solid #ccc;
         text-align: center;
+        
     }
 
     th {
         background-color: #f9f9f9;
     }
 
-    th:hover{
+    /* th:hover{
         background-color: #e2e1e1;
-    }
+    } */
+
+    /* .acc:hover{
+        background-color: white;
+    } */
 
     .modal .modalGastos {
         position: fixed;
@@ -134,6 +139,7 @@
         margin: 0;
         padding: 0;
         display: none;
+       
 
 
     }
@@ -145,6 +151,7 @@
         justify-content: center;
         align-items: center;
         background-color: rgba(13, 14, 14, 0.493);
+        
 
 
     }
@@ -163,6 +170,7 @@
         box-shadow: 0 0 20px red;
         justify-content: center;
         align-items: center;
+        
 
     }
 
@@ -170,6 +178,7 @@
         box-shadow: none;
         border: none;
         background: linear-gradient(180deg, rgb(243, 241, 243) 34%, rgba(60, 220, 201, 0.44) 77%);
+        
     }
 
     .modalGastos .formulario input,
@@ -199,6 +208,10 @@
         height: 40px;
         font-size: 20px;
         font-weight: 700;
+        cursor: pointer;
+    }
+    #btnAgregar:hover{
+        cursor: pointer;
     }
 
     .btnGastos {
@@ -261,7 +274,7 @@
     
     }
 
-    .cerrar {
+    /* .cerrar {
         cursor: pointer;
         color: rgb(27, 27, 27);
         font-weight: bold;
@@ -270,8 +283,12 @@
         background-color: #ccc;
         padding: 6px;
         color: red;
-    }
+    } */
 
     button:hover {
-        background: #2980b9;
+        background: #89c8f2;
+    }
+
+    #eliminarUsuario{
+       width: 26%;
     }

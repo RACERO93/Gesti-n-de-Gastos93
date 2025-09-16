@@ -1,4 +1,5 @@
 let gastos = [];
+let categoriaAPI = [];
 
 // obtener los gatos desde las APIs
 async function obtenerGastosDesdeAPI() {
@@ -20,7 +21,7 @@ async function obtenerGastosDesdeAPI() {
       id: g.id,
       userId: g.userId,
       titulo: g.titulo || g.title || "Sin titulo",
-      categoria: g.categoria || g.category || g.categoryId || "Sin categoria",
+      categoriaId: g.categoria || g.category || g.categoryId || "Sin categoria",
       monto: Number(g.monto || g.amount || 0),
       fecha: g.fecha || g.date || ""
     }));
@@ -42,7 +43,7 @@ function aplicarFiltros() {
 
   const filtrados = gastos
     .filter(g => g.titulo.toLowerCase().includes(texto))    //para verfirificar si la cadena de texto es verdadero
-    .filter(g => !categoria || g.categoria === categoria)
+    .filter(g => !categoria || g.categoriaId === categoria)
     .filter(g => g.monto >= min && g.monto <= max)
     .filter(g => mes === "" || new Date(g.fecha).getMonth() === parseInt(mes));
 
@@ -62,21 +63,26 @@ function renderizarTabla(lista) {
 
 
   lista.forEach(g => {
-    fila = document.createElement("tr");
+
+    // Buscar el nombre de la categoría en categoriaAPI
+    let nombreCategoria = "Sin categoria";
+    const cat = categoriaAPI.find(c => c.id == g.categoriaId);
+    if (cat) nombreCategoria = cat.name;
+
+    const fila = document.createElement("tr");
     fila.innerHTML = `
-      <td>${g.titulo}</td>
-      <td>${g.categoria}</td>
-      <td>$${g.monto.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
-      <td>${new Date(g.fecha).toLocaleDateString()}</td>
-      <td>
-      <button onclick="editarGasto(${g.id})">Editar</button>
-        <button onclick="eliminarGasto(${g.id})">Eliminar</button>
-      </td>
-    `;
+  <td>${g.titulo}</td>
+  <td>${nombreCategoria}</td>
+  <td>$${g.monto.toLocaleString('es-CO', { minimumFractionDigits: 2 })}</td>
+  <td>${new Date(g.fecha).toLocaleDateString()}</td>
+  <td>
+  <button onclick="editarGasto(${g.id})">Editar</button>
+  <button onclick="eliminarGasto(${g.id})">Eliminar</button>
+  </td>
+`;
     tbody.appendChild(fila);
   });
 }
-
 
 function abrirModalEditar() {
   document.getElementById("modalEditar").style.display = "block";
@@ -96,7 +102,6 @@ function editarGasto(id) {
     alert("Gasto no encontrado.");
     return;
   }
-
   document.getElementById("idEditar").value = gasto.id;
   document.getElementById("tituloEditar").value = gasto.titulo;
   document.getElementById("categoriaEditar").value = gasto.categoryId;
@@ -114,7 +119,6 @@ document.getElementById("modalEditar").addEventListener("submit", async function
   const categoria = document.getElementById("categoriaEditar").value;
   const monto = parseFloat(document.getElementById("montoEditar").value);
   const fecha = document.getElementById("fechaEditar").value;
-
   try {
     const respuesta = await fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`, {
       method: "PUT",
@@ -153,16 +157,15 @@ function eliminarGasto(id) {
     });
 }
 
-
 //obtener  categoria
 const url = "https://.booksandbooksdigital.com.co/practicante/backend/categories";
-let categoriaAPI = [];
+
 async function cargarCategoria() {
   try {
     const respuestaCategoria = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/categories");
 
     categoriaAPI = await respuestaCategoria.json();
-
+    mostrarCategorias();
     // console.log("Categorias cargadas:", categoriaAPI);
   } catch (error) {
     console.error(" Error al traer las categorias:", error);
@@ -208,6 +211,8 @@ function mostrarCategorias() {
     categoriaEditar.appendChild(optionEditar);
   });
 }
+
+
 
 
 

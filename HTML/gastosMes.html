@@ -57,11 +57,11 @@
 
       <thead>
         <tr>
-          <th onclick="abrirModal('modalTitulo')" style="cursor:pointer;">Titulo</th>
-          <th onclick="abrirModal('modalCategoria')" style="cursor:pointer;">Categoria </th>
-          <th onclick="abrirModal('modalMonto')" style="cursor:pointer;">Monto </th>
-          <th onclick="abrirModal('modalFecha')" style="cursor:pointer;">Fecha </th>
-          <th>Acciones</th>
+          <th>Titulo</th>
+          <th>Categoria </th>
+          <th>Monto </th>
+          <th>Fecha </th>
+          <th class="acc">Acciones</th>
         </tr>
       </thead>
     <tbody id="tablaGastos"></tbody>
@@ -165,7 +165,7 @@
             <input type="number" id="monto" placeholder="Monto">
             <span class="error" id="errorMonto"></span>
 
-            <select id="categoria">
+            <select id="gastoCategoria">
               <option disabled selected>Seleccionar una Categoria</option>
             </select>
             <span class="error" id="errorCategoria"></span>
