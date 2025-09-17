@@ -3,7 +3,7 @@
         font-family: serif;
         padding: 15px;
         margin: 0 ! important;
-        background: linear-gradient(180deg, rgba(251, 200, 251, 0) 34%, rgba(60, 220, 200, 1) 77%);
+        background: linear-gradient(180deg, rgba(251, 200, 251, 0) 4%, rgba(60, 220, 200, 1) 85%);
         position: relative;
     }
 
@@ -94,6 +94,9 @@
         justify-content: center;
         gap: 10px;
         margin: 20px 0;
+        position: sticky;
+    top: 2px;
+
     }
 
     .formulario input,
@@ -102,6 +105,7 @@
     .filtros select {
         padding: 6px;
         width: 200px;
+        background-color: #d9edfa;
     }
 
     table {
@@ -120,6 +124,10 @@
 
     th {
         background-color: #f9f9f9;
+    background-color: #5cb6f2;
+ 
+        
+
     }
 
     /* th:hover{

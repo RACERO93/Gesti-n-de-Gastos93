@@ -205,6 +205,7 @@ async function agregarGasto() {
     alert("Enviado y Guardado correctamente");
     obtenerGastosDesdeAPI();
 
+    // cerrar modal
     const modal = document.querySelector(".modalGastos") //para llemar el elemento de la cada modal
     modal.style.display = "none"
 
@@ -378,8 +379,8 @@ async function cargarCategorias() {
 
     categorias.forEach(cat => {
       const option = document.createElement("option");
-      option.value = cat.nombre;
-      option.textContent = cat.nombre;
+      option.value = cat.id;
+      option.textContent = cat.name;
       select.appendChild(option);
     });
 

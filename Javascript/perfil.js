@@ -39,7 +39,7 @@ async function perfil(id, nombre, correo, contraseña) {
     const correoExistente = listaUsuarios.find(u => u.email === correo && u.id !== id);
     if (correoExistente) {
       alert(" El correo ya esta registrado por otro usuario.");
-      return; 
+      return;
     }
 
     //  Si no existe, actualizar usuario
@@ -72,5 +72,45 @@ async function perfil(id, nombre, correo, contraseña) {
   } catch (error) {
     console.error("Error al editar usuario:", error);
     alert("Hubo un error al editar el perfil.");
+  }
+}
+
+//ELIMINAR CUENTA
+
+
+// EL EVENTO CARGA UN EVENTO HTML
+document.addEventListener("DOMContentLoaded", function () {
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+  if (!usuario) {
+    alert("No se encontró información del usuario");
+    window.location.href = "inicioSesion.html";
+    return;
+  }
+
+  //  AL HACER CLIC EN EL BOTON SE ELIMINARA LA CUENTA 
+  document.getElementById("eliminarUsuario").addEventListener("click", () => {
+    eliminarCuenta(usuario.id);
+  });
+});
+
+// FUNION PARA ELIMINAR EL USUARIO
+async function eliminarCuenta(id) {
+  if (!confirm(" ¿Seguro que deseas eliminar tu cuenta?")) return;
+
+  try {
+    const response = await fetch(`https://demos.booksandbooksdigital.com.co/practicante/backend/users/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!response.ok) throw new Error("Error al eliminar");
+
+    localStorage.clear(); // BORRA LA SESION
+    alert(" Cuenta eliminada con éxito.");
+    window.location.href = "../iniciarSesion.html"; // REDIRIGIRSE 
+
+  } catch (error) {
+    console.error(error);
+    alert("Hubo un error al eliminar tu cuenta.");
   }
 }

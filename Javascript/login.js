@@ -50,7 +50,7 @@ function iniciarSesion(correo, contraseña) {
       if (usuario) {
         localStorage.setItem('usuario', JSON.stringify(usuario));
         localStorage.setItem('autenticado', 'true');
-        alert("Inicio de sesion exitoso");
+        alert("Inicio de sesión con éxito");
         window.location.href = 'menu.html';
       } else {
         alert("correo o contraseña incorrectas");
