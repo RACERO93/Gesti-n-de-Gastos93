@@ -19,7 +19,7 @@ if (!usuario) {
   mensajeError.textContent = "no hay sesion iniciada";
 
   setTimeout(() => {
-    window.location.href = "iniciarSesion.html";
+    window.location.href = "../iniciarSesion.html";
   }, 2000);
 
 } else {
@@ -35,7 +35,8 @@ function cargarMeses() {
     if (i === mesSeleccionado) btn.classList.add("activo");
 
     btn.onclick = () => {
-      mesSeleccionado = i;
+      mesSeleccionado = i;    //es la variable donde se guadar el mes asignado 
+      // recorre cada boton y quira la clase css activo 
       document.querySelectorAll("#mesesContainer button").forEach(b => b.classList.remove("activo"));
       btn.classList.add("activo");
      
@@ -47,7 +48,8 @@ function cargarMeses() {
 }
 
 // para mostrar los botones de los meses
-document.addEventListener("DOMContentLoaded", () => {
+
+document.addEventListener("DOMContentLoaded", () => {    // el navegador llama primero documento de html y despues lo muestra  
   cargarMeses();
   obtenerGastosDesdeAPI();
   cargarCategorias();
@@ -83,8 +85,8 @@ async function obtenerGastosDesdeAPI() {
     if (!res.ok) throw new Error("Error al obtener gastos");
     const datos = await res.json();
 
-    //Normalizar datos
-    gastos = datos.map(normalizarGasto)
+    //Normalizar datos        funcion
+    gastos = datos.map(normalizarGasto) //se una el metodo map para recorrer cada elemntos de los datos que viene desde la api 
     // .filter(g => g.userId === usuario.id);
 
     filtrarGastos();
@@ -109,7 +111,7 @@ function filtrarGastos() {
     .filter(g => g.monto >= min && g.monto <= max)
     // .filter(g => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
     .filter(g => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
-    .sort((a, b) => a.id - b.id);
+    .sort((a, b) => a.id - b.id); //ordena los elementos en array en orden ascendente oor su propiedad id
 
   Tabla(filtrados);
 }
@@ -179,7 +181,7 @@ async function agregarGasto() {
   const fecha = document.getElementById("fecha").value;
   // usuarioEmail= usuario.email
 
-  if (!titulo || !monto || !categoria || !fecha || !descripcion) {
+  if (!titulo || !monto || !categoria || !fecha || !descripcion) { //si algunos de los elementos esta vacio retorna y manda un mensaje de alert
     return alert("Completa todos los campos");
   }
 

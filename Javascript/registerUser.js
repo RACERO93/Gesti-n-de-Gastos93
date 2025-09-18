@@ -12,7 +12,7 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     return;
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {   //
     mensajeError.textContent = "Por favor, ingrese un correo valido.";
     return;
   }
@@ -32,14 +32,14 @@ async function registrarUsuario(name, email, password, mensajeError) {
   console.log('Intentando registrar usuario:', usuario);
 
   try {
-    // 1. Consultar todos los usuarios antes de registrar
+    //  Consultar todos los usuarios antes de registrar
     const res = await fetch("https://demos.booksandbooksdigital.com.co/practicante/backend/users");
     if (!res.ok) throw new Error("Error al obtener los usuarios");
 
     const usuarios = await res.json();
     console.log("Usuarios obtenidos:", usuarios);
 
-    // 2. Validar si ya existe este usuario por correo
+    //  Validar si ya existe este usuario por correo
     const existe = usuarios.some(u => u.email?.toLowerCase() === email.toLowerCase());
     if (existe) {
       mensajeError.textContent = "Este correo ya esta registrado.";
@@ -47,7 +47,7 @@ async function registrarUsuario(name, email, password, mensajeError) {
       return;
     }
 
-    // 3. Si no existe, registrar el nuevo usuario
+    //  Si no existe, registrar el nuevo usuario
     const resRegistro = await fetch('https://demos.booksandbooksdigital.com.co/practicante/backend/users', {
       method: 'POST',
       body: JSON.stringify(usuario),
