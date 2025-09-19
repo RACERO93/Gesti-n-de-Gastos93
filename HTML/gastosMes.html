@@ -46,20 +46,20 @@
 
 
   <div class="filtros">
-    <input type="text" id="filtroTitulo" placeholder="Buscar por titulo" oninput="filtrarGastos()">
-    <select id="filtroCategoria" onchange="filtrarGastos()">
+    <input type="text" id="filtroTitulo" placeholder="Buscar por titulo">
+    <select id="filtroCategoria">
       <option value="">Todas las categorias</option>
     </select>
 
 
-    <input type="number" id="filtroMin" placeholder="Valor minimo"
-      oninput="filtrarGastos()"><!-- activa cada Acciones con el oninput-->
-    <input type="number" id="filtroMax" placeholder="Valor maximo" oninput="filtrarGastos()">
-    <input type="date" id="filtroFecha" placeholder="Buscar por fecha" oninput="filtrarGastos()">
+    <input type="number" id="filtroMin" placeholder="Valor minimo">
+    <input type="number" id="filtroMax" placeholder="Valor maximo">
+    <input type="date" id="filtroFecha" placeholder="Buscar por fecha">
     <br><br>
+    
     <select id="filtroDias">
 
-      <option value="">Dias</option>
+      <option value="">Todos los Dias</option>
 
 
       <option value="0">1</option>
@@ -96,7 +96,7 @@
     </select>
 
     <!-- <p>filtar por meses</p> -->
-    <select id="filtroMes">
+    <select id="filtroMes"disabled style="display:none";>
       
       <option value="">Todos los meses</option>
 
@@ -116,7 +116,7 @@
     </select>
 
     <select id="filtroaño">
-      <option value="">Años</option>
+      <option value="">Todos los Años</option>
 
       <option value="0">2020</option>
       <option value="1">2021</option>
@@ -127,7 +127,8 @@
       <option value="6">2026</option>
       </select>
     
-    <!-- <button onclick="filtrarGastos()">Buscar</button> -->
+    <button onclick="filtrarGastos()">Aplicar Filtros</button>
+    <button onclick="limpiarFiltros()">Limpiar Filtros</button>
 
   </div>
 

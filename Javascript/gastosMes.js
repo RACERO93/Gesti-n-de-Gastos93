@@ -128,35 +128,65 @@ async function filtrarGastos() {
   const max =
     parseFloat(document.getElementById('filtroMax')?.value) || Infinity
   const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
+  const diaFiltro = document.getElementById('filtroDias')?.value || ''
+  // const mesFiltro = document.getElementById('filtroMes')?.value || ''
+  const añoFiltro = document.getElementById('filtroaño')?.value || ''
 
-  const usuario = JSON.parse(localStorage.getItem('usuario'))
-  if (!usuario) {
-    alert('Debes iniciar sesión primero')
-    return
-  }
+  // ====== FILTRO FRONTEND (array gastos) ======
+  let filtrados = gastos
+    .filter((g) => g.titulo.toLowerCase().includes(tituloFiltro))
+    .filter(
+      (g) =>
+        !categoriaFiltro ||
+        g.categoria == categoriaFiltro ||
+        g.categoryId == categoriaFiltro
+    )
+    .filter((g) => g.monto >= min && g.monto <= max)
+    .filter((g) => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
+    .filter((g) => {
+      const fecha = new Date(g.fecha)
+      return (
+        (!diaFiltro || fecha.getDate() == Number(diaFiltro) + 1) && // +1 porque getDate() empieza en 1
+        // (!mesFiltro || fecha.getMonth() == Number(mesFiltro)) &&
+        (!añoFiltro || fecha.getFullYear() == 2020 + Number(añoFiltro))
+      )
+    })
+    .sort((a, b) => a.id - b.id)
 
-  // Construir query params para la API
-  const params = new URLSearchParams({
-    userId: usuario.id,
-    titulo: tituloFiltro,
-    categoria: categoriaFiltro,
-    min: min,
-    max: max,
-    fecha: fechaFiltro,
-    mes: mesSeleccionado + 1, // si tu API espera el mes como número (1-12)
-  })
+  // Mostrar resultados frontend
+  Tabla(filtrados)
 
+  // ====== FILTRO BACKEND (API) ======
   try {
+    const usuario = JSON.parse(localStorage.getItem('usuario'))
+    if (!usuario) {
+      alert('Debes iniciar sesión primero')
+      return
+    }
+
+    const params = new URLSearchParams({
+      userId: usuario.id,
+      titulo: tituloFiltro,
+      categoria: categoriaFiltro,
+      min,
+      max,
+      fecha: fechaFiltro,
+      dia: diaFiltro,
+      mes: mesFiltro,
+      año: añoFiltro,
+    })
+
     const res = await fetch(
       `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?${params}`
     )
+    if (!res.ok) throw new Error('Error al obtener gastos desde la API')
+
     const data = await res.json()
 
-    // La API ya debe responder con los gastos filtrados
+    // Mostrar resultados backend (sobrescribe la tabla con datos oficiales)
     Tabla(data)
   } catch (error) {
-    console.error('Error al filtrar desde la API:', error)
-    alert('Hubo un problema al filtrar los gastos')
+    console.error('Error en filtro backend:', error)
   }
 }
 
@@ -165,8 +195,61 @@ function limpiarFiltros() {
   document.getElementById('filtroCategoria').value = ''
   document.getElementById('filtroMin').value = ''
   document.getElementById('filtroMax').value = ''
+  document.getElementById('filtroFecha').value = ''
+  document.getElementById('filtroDias').value = ''
+  document.getElementById('filtroMes').value = ''
+  document.getElementById('filtroaño').value = ''
   filtrarGastos()
 }
+
+// async function filtrarGastos() {
+//   const tituloFiltro =
+//     document.getElementById('filtroTitulo')?.value.toLowerCase() || ''
+//   const categoriaFiltro =
+//     document.getElementById('filtroCategoria')?.value || ''
+//   const min = parseFloat(document.getElementById('filtroMin')?.value) || 0
+//   const max =
+//     parseFloat(document.getElementById('filtroMax')?.value) || Infinity
+//   const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
+
+//   const usuario = JSON.parse(localStorage.getItem('usuario'))
+//   if (!usuario) {
+//     alert('Debes iniciar sesión primero')
+//     return
+//   }
+
+//   // Construir query params para la API
+//   const params = new URLSearchParams({
+//     userId: usuario.id,
+//     titulo: tituloFiltro,
+//     categoria: categoriaFiltro,
+//     min: min,
+//     max: max,
+//     fecha: fechaFiltro,
+//     mes: mesSeleccionado + 1, // si tu API espera el mes como número (1-12)
+//   })
+
+//   try {
+//     const res = await fetch(
+//       `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?${params}`
+//     )
+//     const data = await res.json()
+
+//     // La API ya debe responder con los gastos filtrados
+//     Tabla(data)
+//   } catch (error) {
+//     console.error('Error al filtrar desde la API:', error)
+//     alert('Hubo un problema al filtrar los gastos')
+//   }
+// }
+
+// function limpiarFiltros() {
+//   document.getElementById('filtroTitulo').value = ''
+//   document.getElementById('filtroCategoria').value = ''
+//   document.getElementById('filtroMin').value = ''
+//   document.getElementById('filtroMax').value = ''
+//   filtrarGastos()
+// }
 
 function validarFormularioGasto() {
   let valido = true
@@ -396,17 +479,20 @@ async function agregarCategoria() {
 
     if (!res.ok) throw new Error('No se pudo crear la categoria')
 
+    const nuevaCategoria = await res.json()
+
+    // Crear la opción usando el id
     const nuevaOpcion = document.createElement('option')
-    nuevaOpcion.value = name
-    nuevaOpcion.textContent = name
+    nuevaOpcion.value = nuevaCategoria.id
+    nuevaOpcion.textContent = nuevaCategoria.name
     select.appendChild(nuevaOpcion)
 
-    select.value = name
+    // Seleccionar automáticamente la nueva categoría
+    select.value = nuevaCategoria.id
 
     mensaje.textContent = ' Categoria agregada'
     mensaje.style.color = 'green'
     document.getElementById('nuevaCategoria').value = ''
-
     setTimeout(() => {
       mensaje.textContent = ''
     }, 1500)
@@ -417,6 +503,39 @@ async function agregarCategoria() {
     setTimeout(() => {
       mensaje.textContent = ''
     }, 1500)
+  }
+}
+
+// Iniciar edición de un gasto
+function iniciarEdicion(id) {
+  try {
+    fetch(
+      `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        // Abrir modal
+        document.getElementById('btnOpenModalGastos').click()
+
+        // Llenar campos
+        document.getElementById('titulo').value = data.title || data.titulo
+        document.getElementById('descripcion').value =
+          data.description || data.descripcion
+        document.getElementById('monto').value = data.amount || data.monto
+        document.getElementById('fecha').value = data.date || data.fecha
+
+        // Seleccionar categoría correcta por id
+        document.getElementById('categoria').value = data.categoryId
+
+        // Cambiar títulos y botones
+        document.getElementById('tituloModal').innerText = 'Editar Gasto'
+        document.getElementById('btnAgregar').style.display = 'none'
+        document.getElementById('btnGuardar').style.display = 'inline-block'
+
+        gastoEditandoId = id
+      })
+  } catch (error) {
+    console.error('Error al cargar gasto:', error)
   }
 }
 // obtenerGastosDesdeAPI();
@@ -432,7 +551,7 @@ async function cargarCategorias() {
 
     categorias.forEach((cat) => {
       const option = document.createElement('option')
-      option.value = cat.id
+      option.value = cat.id // usar id como value
       option.textContent = cat.name
       select.appendChild(option)
     })
@@ -618,9 +737,15 @@ function filtrarGastos() {
   const max =
     parseFloat(document.getElementById('filtroMax')?.value) || Infinity
   const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
+  const diaFiltro = document.getElementById('filtroDias')?.value || ''
+  // const mesFiltro = document.getElementById('filtroMes')?.value || ''
+  const añoFiltro = document.getElementById('filtroaño')?.value || ''
 
+  // mes seleccionado por Botones
+  const mesFiltro = mesSeleccionado
+
+  //   --------Filtro por FRONTEND-----------
   const filtrados = gastos
-    .filter((g) => new Date(g.fecha).getMonth() === mesSeleccionado)
     .filter((g) => g.titulo.toLowerCase().includes(tituloFiltro))
     .filter(
       (g) =>
@@ -629,104 +754,66 @@ function filtrarGastos() {
         g.categoryId == categoriaFiltro
     )
     .filter((g) => g.monto >= min && g.monto <= max)
-    // .filter(g => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
     .filter((g) => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
-    .sort((a, b) => a.id - b.id) //ordena los elementos en array en orden ascendente oor su propiedad id
+    .filter((g) => {
+      const fecha = new Date(g.fecha)
+      return (
+        (!diaFiltro || fecha.getDate() == Number(diaFiltro) + 1) && // +1 porque los días inician en 1
+        fecha.getMonth() === mesFiltro &&
+        // (!mesFiltro || fecha.getMonth() == Number(mesFiltro)) &&
+        (!añoFiltro || fecha.getFullYear() == 2020 + Number(añoFiltro))
+      )
+    })
+    .sort((a, b) => a.id - b.id)
 
   Tabla(filtrados)
 }
-async function peticionFiltroPorDia(dia) {
-  try {
-    const respuestaCategoria = await fetch(
-      'https://demos.booksandbooksdigital.com.co/practicante/backend/categories'
-    )
+// ===== FILTRO BACKEND (API) =====
+//   try {
+//     const usuario = JSON.parse(localStorage.getItem("usuario"));
+//     if (!usuario) {
+//       alert("Debes iniciar sesión primero");
+//       return;
+//     }
 
-    categoriaAPI = await respuestaCategoria.json()
+//     const meses = new URLSearchParams({
+//       userId: usuario.id,
+//       titulo: tituloFiltro,
+//       categoria: categoriaFiltro,
+//       min,
+//       max,
+//       fecha: fechaFiltro,
+//       dia: diaFiltro,
+//       año: añoFiltro,
+//     });
 
-    // console.log("Categorias cargadas:", categoriaAPI);
-  } catch (error) {
-    console.error(' Error al traer las categorías:', error)
-  }
+//     // agrega mes SOLO si hay botón seleccionado
+//     if (mesFiltro !== null) {
+//       meses.append("mes", mesFiltro);
+//     }
+//     const url = `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?${año-mes}`;
+//     console.log("URL:", url);
+
+//     const res = await fetch(url);
+//     if (!res.ok) throw new Error("Error al obtener gastos desde la API");
+
+//     const data = await res.json();
+
+//     // sobreescribe con datos oficiales del backend
+//     Tabla(data);
+//   } catch (error) {
+//     console.error("Error en filtro backend:", error);
+//   }
+// }
+
+function limpiarFiltros() {
+  document.getElementById('filtroTitulo').value = ''
+  document.getElementById('filtroCategoria').value = ''
+  document.getElementById('filtroMin').value = ''
+  document.getElementById('filtroMax').value = ''
+  document.getElementById('filtroFecha').value = ''
+  document.getElementById('filtroDias').value = ''
+  document.getElementById('filtroMes').value = ''
+  document.getElementById('filtroaño').value = ''
+  filtrarGastos()
 }
-const filtroGastosPorDia = () => {
-  const inputValueFitroGastoPorDia = document.querySelector('#filtroPorDia')
-  peticionFiltroPorDia(inputValueFitroGastoPorDia)
-
-  console.log(inputValueFitroGastoPorDia.value)
-}
-
-// function abrirModal(id) {
-//   document.getElementById(id).style.display = "flex";
-// }
-// function cerrarModal(id) {
-//   document.getElementById(id).style.display = "none";
-// }
-// window.onclick = function (e) {
-//   document.querySelectorAll(".modal").forEach(modal => {
-//     if (e.target === modal) modal.style.display = "none";
-//   });
-// }
-
-// function aplicarFiltros() {
-//   const tituloFiltro = document.getElementById("filtroTitulo");
-//   const categoriaFiltro = document.getElementById("gastoCategoria").value;
-//   const min = parseFloat(document.getElementById("filtroMin").value);
-//   const max = parseFloat(document.getElementById("filtroMax").value);
-//   const fechaFiltro = document.getElementById("filtroFecha").value; // nuevo
-//   console.log( "este es el valor de titulo",  tituloFiltro)
-
-//   const filtrados = gastos
-//     // solo mostrar los del mes actual
-//     .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
-//     // filtro por título
-//     .filter(g => g.titulo.includes(tituloFiltro))
-//     // filtro por categoría (si no está vacío)
-//     .filter(g => gastoCategoria === "" || g.categoria == gastoCategoria)
-//     // filtro por monto mínimo
-//     .filter(g => isNaN(min) || g.monto >= min)
-//     // filtro por monto máximo
-//     .filter(g => isNaN(max) || g.monto <= max)
-//     // filtro por fecha exacta (si se ingresa)
-
-//     // ordenar por ID para mantener consistencia
-//     .sort((a, b) => a.id - b.id);
-
-//   Tabla(filtrados);
-// }
-
-// function limpiarFiltros() {
-//   document.getElementById("filtroTitulo").value = "";
-//   document.getElementById("gastoCategoria").value = "";
-//   document.getElementById("filtroMin").value = "";
-//   document.getElementById("filtroMax").value = "";
-//   document.getElementById("filtroFecha").value = "";
-//   filtrarGastos();
-// }
-
-// function aplicarFiltros() {
-//   const tituloFiltro = document.getElementById("filtroTitulo")?.value.trim().toLowerCase() || "";
-//   const categoriaFiltro = document.getElementById("filtroCategoria")?.value || "";
-//   const min = parseFloat(document.getElementById("filtroMin")?.value) || 0;
-//   const max = parseFloat(document.getElementById("filtroMax")?.value) || Infinity;
-//   const fechaFiltro = document.getElementById("filtroFecha")?.value || "";
-
-//   const filtrados = gastos
-//     // Solo gastos del mes seleccionado
-//     .filter(g => new Date(g.fecha).getMonth() === mesSeleccionado)
-//     // Filtros aplicados
-//     .filter(g => {
-//       const coincideTitulo = !tituloFiltro || (g.titulo && g.titulo.toLowerCase().includes(tituloFiltro));
-//       const coincideCategoria = !categoriaFiltro || (g.categoria == categoriaFiltro || g.categoryId == categoriaFiltro);
-//       const coincideMonto = g.monto >= min && g.monto <= max;
-//       const coincideFecha = !fechaFiltro || (g.fecha && g.fecha.startsWith(fechaFiltro));
-
-//       return coincideTitulo && coincideCategoria && coincideMonto && coincideFecha;
-//     })
-//     .sort((a, b) => a.id - b.id);
-
-//   Tabla(filtrados);
-
-//   // Cerrar modal de filtros si existe
-//   const modalFiltros = document.getElementById("modalFiltros");
-//   if (modalFiltros) modalFiltros.style.display = "none";
-// }
