@@ -6,8 +6,7 @@
   <title>Gastos por Mes</title>
   <link rel="stylesheet" href="../styles_css/gastosMes.css">
   <link rel="icon" href="logo.png">
-  <style>
-  </style>
+  <script src="../Javascript/colorfilter.js"></script>
 </head>
 
 <body onscroll="cambiarColorFiltro()">
@@ -18,9 +17,21 @@
   <h2>Gastos por Mes</h2>
 
   <button id="btnOpenModal" style="display: none;">Nueva Categoria</button>
+  <div class="container-btns">
+    <div class="container-left">
+    <button><a href="categorias.html">Categorias</a></button>
+    <button id="btnOpenModalGastos">Agregar Gastos</button>
+    </div>
+    <div class="container-right">
+      <a href="../menu.html" style="float: right;">Volver</a>
+      
+    </div>
+    
 
-  <button id="btnOpenModalGastos">Agregar Gastos</button><br><br>
-  <a href="categorias.html"><button class="category">Categorias</button></a>
+
+  </div>
+
+
   <!-- Boton para guardar un gasto editar -->
   <!-- <button id="btnGuardar" style="display: none;" onclick="actualizarGasto()">Guardar cambios</button> -->
   <div id="mensajeError"
@@ -28,7 +39,8 @@
   </div>
   <!-- <button type="button" onclick="limpiarFormulario()">Cancelar</button> -->
 
-  <br><br><a href="../menu.html" style="float: right;">Volver</a>
+  <br><br>
+  
   <!-- Botones de meses -->
   <div class="meses" id="mesesContainer"></div>
 
@@ -44,6 +56,77 @@
       oninput="filtrarGastos()"><!-- activa cada Acciones con el oninput-->
     <input type="number" id="filtroMax" placeholder="Valor maximo" oninput="filtrarGastos()">
     <input type="date" id="filtroFecha" placeholder="Buscar por fecha" oninput="filtrarGastos()">
+    <br><br>
+    <select id="filtroDias">
+
+      <option value="">Dias</option>
+
+
+      <option value="0">1</option>
+      <option value="1">2</option>
+      <option value="2">3</option>
+      <option value="3">4</option>
+      <option value="4">5</option>
+      <option value="5">6</option>
+      <option value="6">7</option>
+      <option value="7">8</option>
+      <option value="8">9</option>
+      <option value="9">10</option>
+      <option value="10">11</option>
+      <option value="11">12</option>
+      <option value="12">13</option>
+      <option value="13">14</option>
+      <option value="14">15</option>
+      <option value="15">16</option>
+      <option value="16">17</option>
+      <option value="17">18</option>
+      <option value="18">19</option>
+      <option value="19">20</option>
+      <option value="20">21</option>
+      <option value="21">22</option>
+      <option value="22">23</option>
+      <option value="23">24</option>
+      <option value="24">25</option>
+      <option value="25">26</option>
+      <option value="26">27</option>
+      <option value="27">28</option>
+      <option value="28">29</option>
+      <option value="29">30</option>
+      <option value="30">31</option>
+    </select>
+
+    <!-- <p>filtar por meses</p> -->
+    <select id="filtroMes">
+      
+      <option value="">Todos los meses</option>
+
+
+      <option value="0">Enero</option>
+      <option value="1">Febrero</option>
+      <option value="2">Marzo</option>
+      <option value="3">Abril</option>
+      <option value="4">Mayo</option>
+      <option value="5">Junio</option>
+      <option value="6">Julio</option>
+      <option value="7">Agosto</option>
+      <option value="8">Septiembre</option>
+      <option value="9">Octubre</option>
+      <option value="10">Noviembre</option>
+      <option value="11">Diciembre</option>
+    </select>
+
+    <select id="filtroaño">
+      <option value="">Años</option>
+
+      <option value="0">2020</option>
+      <option value="1">2021</option>
+      <option value="2">2022</option>
+      <option value="3">2023</option>
+      <option value="4">2024</option>
+      <option value="5">2025</option>
+      <option value="6">2026</option>
+      </select>
+    
     <!-- <button onclick="filtrarGastos()">Buscar</button> -->
 
   </div>
@@ -362,7 +445,6 @@
     aspernatur dicta incidunt obcaecati, officiis quae eum corrupti dolorum est animi ullam libero iure amet.
   </p>
   <script src="../Javascript/gastosMes.js"></script>
-  <script src="../Javascript/colorfilter.js"></script>
 
 
 </body>
