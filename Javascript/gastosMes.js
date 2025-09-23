@@ -1,5 +1,10 @@
 // declarando la constante con todos los meses del año
 
+let gastos = []
+let mesSeleccionado = new Date().getMonth() //para identificar los meses por numeros desde 0
+let idEditando = null
+let categoriaAPI = []
+
 const meses = [
   'Enero',
   'Febrero',
@@ -14,10 +19,6 @@ const meses = [
   'Noviembre',
   'Diciembre',
 ]
-
-let gastos = []
-let mesSeleccionado = new Date().getMonth() //para identificar los meses por numeros desde 0
-let idEditando = null
 
 const mesesContainer = document.getElementById('mesesContainer') //  buscando el elementos id="mesescontaines"en html//
 const tbody = document.getElementById('tablaGastos')
@@ -54,7 +55,6 @@ function cargarMeses() {
       btn.classList.add('activo')
 
       filtrarGastos()
-      filtroGastosPorDia()
     }
 
     mesesContainer.appendChild(btn)
@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // el navegador llama primero documento de html y despues lo muestra
   cargarMeses()
   obtenerGastosDesdeAPI()
-  cargarCategorias()
 })
 
 function parsedDate(date) {
@@ -86,12 +85,11 @@ function normalizarGasto(gasto) {
     monto: isNaN(Number(gasto.monto || gasto.amount))
       ? 0
       : Number(gasto.monto || gasto.amount),
-    fecha:
-      parsedDate(gasto.fecha || gasto.date) ||
-      new Date().toISOString().split()[0],
+    fecha: parsedDate(gasto.fecha || gasto.date), //||
+    // new Date().toISOString().split()[0],
   }
 }
-
+// obtiene los gastos desde la api Expenses
 async function obtenerGastosDesdeAPI() {
   mensajeError.style.display = 'none'
   const usuario = JSON.parse(localStorage.getItem('usuario'))
@@ -132,7 +130,7 @@ async function filtrarGastos() {
   // const mesFiltro = document.getElementById('filtroMes')?.value || ''
   const añoFiltro = document.getElementById('filtroaño')?.value || ''
 
-  // ====== FILTRO FRONTEND (array gastos) ======
+  // -------- FILTRO FRONTEND
   let filtrados = gastos
     .filter((g) => g.titulo.toLowerCase().includes(tituloFiltro))
     .filter(
@@ -156,7 +154,7 @@ async function filtrarGastos() {
   // Mostrar resultados frontend
   Tabla(filtrados)
 
-  // ====== FILTRO BACKEND (API) ======
+  // ------- FILTRO BACKEND (API)
   try {
     const usuario = JSON.parse(localStorage.getItem('usuario'))
     if (!usuario) {
@@ -201,55 +199,6 @@ function limpiarFiltros() {
   document.getElementById('filtroaño').value = ''
   filtrarGastos()
 }
-
-// async function filtrarGastos() {
-//   const tituloFiltro =
-//     document.getElementById('filtroTitulo')?.value.toLowerCase() || ''
-//   const categoriaFiltro =
-//     document.getElementById('filtroCategoria')?.value || ''
-//   const min = parseFloat(document.getElementById('filtroMin')?.value) || 0
-//   const max =
-//     parseFloat(document.getElementById('filtroMax')?.value) || Infinity
-//   const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
-
-//   const usuario = JSON.parse(localStorage.getItem('usuario'))
-//   if (!usuario) {
-//     alert('Debes iniciar sesión primero')
-//     return
-//   }
-
-//   // Construir query params para la API
-//   const params = new URLSearchParams({
-//     userId: usuario.id,
-//     titulo: tituloFiltro,
-//     categoria: categoriaFiltro,
-//     min: min,
-//     max: max,
-//     fecha: fechaFiltro,
-//     mes: mesSeleccionado + 1, // si tu API espera el mes como número (1-12)
-//   })
-
-//   try {
-//     const res = await fetch(
-//       `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?${params}`
-//     )
-//     const data = await res.json()
-
-//     // La API ya debe responder con los gastos filtrados
-//     Tabla(data)
-//   } catch (error) {
-//     console.error('Error al filtrar desde la API:', error)
-//     alert('Hubo un problema al filtrar los gastos')
-//   }
-// }
-
-// function limpiarFiltros() {
-//   document.getElementById('filtroTitulo').value = ''
-//   document.getElementById('filtroCategoria').value = ''
-//   document.getElementById('filtroMin').value = ''
-//   document.getElementById('filtroMax').value = ''
-//   filtrarGastos()
-// }
 
 function validarFormularioGasto() {
   let valido = true
@@ -297,15 +246,16 @@ function validarFormularioGasto() {
 }
 
 async function agregarGasto() {
-  const usuario = JSON.parse(localStorage.getItem('usuario'))
-  if (!usuario) return alert('no hay sesion iniciada')
+  const usuario = JSON.parse(localStorage.getItem('usuario')) //---
+  if (!usuario) return alert('no hay sesion iniciada') //-----
 
-  if (!validarFormularioGasto()) return
+  if (!validarFormularioGasto()) return //----
 
   const titulo = document.getElementById('titulo').value
   const descripcion = document.getElementById('descripcion').value
   const monto = parseFloat(document.getElementById('monto').value)
-  const categoria = parseInt(document.getElementById('categoria').value)
+  const categoria = parseInt(document.getElementById('gastoCategoria').value)
+  console.log(categoria)
   const fecha = document.getElementById('fecha').value
   // usuarioEmail= usuario.email
 
@@ -346,7 +296,8 @@ async function agregarGasto() {
     document.getElementById('titulo').value = ''
     document.getElementById('descripcion').value = ''
     document.getElementById('monto').value = ''
-    document.getElementById('categoria').value = ''
+    console.log(document.getElementById('gastoCategoria'))
+    document.getElementById('gastoCategoria').value = ''
     document.getElementById('fecha').value = ''
   } catch (error) {
     console.error('Error al agregar gasto:', error)
@@ -372,7 +323,7 @@ function iniciarEdicion(id) {
           data.description || data.descripcion
         document.getElementById('monto').value = data.amount || data.monto
         document.getElementById('fecha').value = data.date || data.fecha
-        document.getElementById('categoria').value =
+        document.getElementById('gastoCategoria').value =
           data.categoryId || data.categoria
 
         // Cambiar titulos y botones
@@ -392,7 +343,7 @@ function cancelarEdicion() {
   document.getElementById('titulo').value = ''
   document.getElementById('descripcion').value = ''
   document.getElementById('monto').value = ''
-  document.getElementById('categoria').value = ''
+  document.getElementById('gastoCategoria').value = ''
   document.getElementById('fecha').value = ''
 
   document.getElementById('btnAgregar').style.display = 'inline-block'
@@ -414,7 +365,7 @@ function actualizarGasto() {
   const descripcion = document.getElementById('descripcion').value.trim()
   const monto = parseFloat(document.getElementById('monto').value)
   const fecha = document.getElementById('fecha').value
-  const categoria = parseInt(document.getElementById('categoria').value)
+  const categoria = parseInt(document.getElementById('gastoCategoria').value)
 
   const gastoActualizado = {
     userId: usuario.id,
@@ -507,60 +458,38 @@ async function agregarCategoria() {
 }
 
 // Iniciar edición de un gasto
-function iniciarEdicion(id) {
-  try {
-    fetch(
-      `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        // Abrir modal
-        document.getElementById('btnOpenModalGastos').click()
+// function iniciarEdicion(id) {
+//   try {
+//     fetch(
+//       `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`
+//     )
+//       .then((res) => res.json())
+//       .then((data) => {
+//         // Abrir modal
+//         document.getElementById('btnOpenModalGastos').click()
 
-        // Llenar campos
-        document.getElementById('titulo').value = data.title || data.titulo
-        document.getElementById('descripcion').value =
-          data.description || data.descripcion
-        document.getElementById('monto').value = data.amount || data.monto
-        document.getElementById('fecha').value = data.date || data.fecha
+//         // Llenar campos
+//         document.getElementById('titulo').value = data.title || data.titulo
+//         document.getElementById('descripcion').value =
+//           data.description || data.descripcion
+//         document.getElementById('monto').value = data.amount || data.monto
+//         document.getElementById('fecha').value = data.date || data.fecha
 
-        // Seleccionar categoría correcta por id
-        document.getElementById('categoria').value = data.categoryId
+//         // Seleccionar categoría correcta por id
+//         document.getElementById('categoria').value = data.categoryId
 
-        // Cambiar títulos y botones
-        document.getElementById('tituloModal').innerText = 'Editar Gasto'
-        document.getElementById('btnAgregar').style.display = 'none'
-        document.getElementById('btnGuardar').style.display = 'inline-block'
+//         // Cambiar títulos y botones
+//         document.getElementById('tituloModal').innerText = 'Editar Gasto'
+//         document.getElementById('btnAgregar').style.display = 'none'
+//         document.getElementById('btnGuardar').style.display = 'inline-block'
 
-        gastoEditandoId = id
-      })
-  } catch (error) {
-    console.error('Error al cargar gasto:', error)
-  }
-}
+//         gastoEditandoId = id
+//       })
+//   } catch (error) {
+//     console.error('Error al cargar gasto:', error)
+//   }
+// }
 // obtenerGastosDesdeAPI();
-async function cargarCategorias() {
-  const select = document.getElementById('categoria')
-  select.innerHTML = ''
-
-  try {
-    const res = await fetch(
-      'https://demos.booksandbooksdigital.com.co/practicante/backend/categories'
-    )
-    const categorias = await res.json()
-
-    categorias.forEach((cat) => {
-      const option = document.createElement('option')
-      option.value = cat.id // usar id como value
-      option.textContent = cat.name
-      select.appendChild(option)
-    })
-  } catch (error) {
-    console.error('Error al cargar categorias:', error)
-  }
-}
-
-obtenerGastosDesdeAPI()
 
 function eliminarGasto(id) {
   if (!confirm('¿Estas seguro de eliminar este gasto?')) return
@@ -615,26 +544,26 @@ function Tabla(lista) {
         <button onclick="eliminarGasto(${gasto.id})">Eliminar</button>
       </td>
     `
-
-    function limpiarFormulario() {
-      document.getElementById('titulo').value = ''
-      document.getElementById('descripcion').value = ''
-      document.getElementById('monto').value = ''
-      document.getElementById('categoria').value = ''
-      document.getElementById('fecha').value = ''
-
-      document.getElementById('btnGuardar').style.display = 'none'
-      document.getElementById('btnAgregar').style.display = 'inline-block'
-
-      const mensajeError = document.getElementById('mensajeError')
-      if (mensajeError) {
-        mensajeError.style.display = 'none'
-      }
-
-      //  document.getElementById("mensajeError").style.display="none";
-    }
+    limpiarFormulario()
     tbody.appendChild(tr)
   })
+}
+function limpiarFormulario() {
+  document.getElementById('titulo').value = ''
+  document.getElementById('descripcion').value = ''
+  document.getElementById('monto').value = ''
+  document.getElementById('gastoCategoria').value = ''
+  document.getElementById('fecha').value = ''
+
+  document.getElementById('btnGuardar').style.display = 'none'
+  document.getElementById('btnAgregar').style.display = 'inline-block'
+
+  const mensajeError = document.getElementById('mensajeError')
+  if (mensajeError) {
+    mensajeError.style.display = 'none'
+  }
+
+  //  document.getElementById("mensajeError").style.display="none";
 }
 
 obtenerGastosDesdeAPI()
@@ -674,6 +603,7 @@ openModalGastos.addEventListener('click', () => {
 //que devuelve una lista de nodos
 document.querySelectorAll('.btnModal').forEach((btn) => {
   btn.addEventListener('click', () => {
+    limpiarFormulario()
     document.querySelector('.modalGastos').style.display = 'none'
   })
 })
@@ -686,23 +616,29 @@ function cerrarModalEditar() {
 //obtener  categoria
 const url =
   'https://.booksandbooksdigital.com.co/practicante/backend/categories'
+async function cargarCategorias() {
+  const select = document.getElementById('categoria')
+  select.innerHTML = ''
 
-let categoriaAPI = []
-
-async function cargarCategoria() {
   try {
-    const respuestaCategoria = await fetch(
+    const res = await fetch(
       'https://demos.booksandbooksdigital.com.co/practicante/backend/categories'
     )
+    categoriaAPI = await res.json()
 
-    categoriaAPI = await respuestaCategoria.json()
-
-    // console.log("Categorias cargadas:", categoriaAPI);
+    categoriaAPI.forEach((cat) => {
+      const option = document.createElement('option')
+      option.value = cat.id // usar id como value
+      option.textContent = cat.name
+      select.appendChild(option)
+    })
   } catch (error) {
-    console.error(' Error al traer las categorías:', error)
+    console.error('Error al cargar categorias:', error)
   }
 }
 
+obtenerGastosDesdeAPI()
+// funcion para mostrar las categorias en la tabla
 function mostrarCategorias() {
   const categoria = document.getElementById('gastoCategoria')
   const categoriaFiltro = document.getElementById('filtroCategoria')
@@ -720,7 +656,7 @@ function mostrarCategorias() {
   })
 }
 
-cargarCategoria()
+cargarCategorias()
 
 setTimeout(() => {
   mostrarCategorias()
@@ -768,43 +704,6 @@ function filtrarGastos() {
 
   Tabla(filtrados)
 }
-// ===== FILTRO BACKEND (API) =====
-//   try {
-//     const usuario = JSON.parse(localStorage.getItem("usuario"));
-//     if (!usuario) {
-//       alert("Debes iniciar sesión primero");
-//       return;
-//     }
-
-//     const meses = new URLSearchParams({
-//       userId: usuario.id,
-//       titulo: tituloFiltro,
-//       categoria: categoriaFiltro,
-//       min,
-//       max,
-//       fecha: fechaFiltro,
-//       dia: diaFiltro,
-//       año: añoFiltro,
-//     });
-
-//     // agrega mes SOLO si hay botón seleccionado
-//     if (mesFiltro !== null) {
-//       meses.append("mes", mesFiltro);
-//     }
-//     const url = `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?${año-mes}`;
-//     console.log("URL:", url);
-
-//     const res = await fetch(url);
-//     if (!res.ok) throw new Error("Error al obtener gastos desde la API");
-
-//     const data = await res.json();
-
-//     // sobreescribe con datos oficiales del backend
-//     Tabla(data);
-//   } catch (error) {
-//     console.error("Error en filtro backend:", error);
-//   }
-// }
 
 function limpiarFiltros() {
   document.getElementById('filtroTitulo').value = ''
