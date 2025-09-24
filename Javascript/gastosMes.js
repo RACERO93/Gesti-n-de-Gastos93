@@ -117,89 +117,6 @@ async function obtenerGastosDesdeAPI() {
   }
 }
 
-async function filtrarGastos() {
-  const tituloFiltro =
-    document.getElementById('filtroTitulo')?.value.toLowerCase() || ''
-  const categoriaFiltro =
-    document.getElementById('filtroCategoria')?.value || ''
-  const min = parseFloat(document.getElementById('filtroMin')?.value) || 0
-  const max =
-    parseFloat(document.getElementById('filtroMax')?.value) || Infinity
-  const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
-  const diaFiltro = document.getElementById('filtroDias')?.value || ''
-  // const mesFiltro = document.getElementById('filtroMes')?.value || ''
-  const añoFiltro = document.getElementById('filtroaño')?.value || ''
-
-  // -------- FILTRO FRONTEND
-  let filtrados = gastos
-    .filter((g) => g.titulo.toLowerCase().includes(tituloFiltro))
-    .filter(
-      (g) =>
-        !categoriaFiltro ||
-        g.categoria == categoriaFiltro ||
-        g.categoryId == categoriaFiltro
-    )
-    .filter((g) => g.monto >= min && g.monto <= max)
-    .filter((g) => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
-    .filter((g) => {
-      const fecha = new Date(g.fecha)
-      return (
-        (!diaFiltro || fecha.getDate() == Number(diaFiltro) + 1) && // +1 porque getDate() empieza en 1
-        // (!mesFiltro || fecha.getMonth() == Number(mesFiltro)) &&
-        (!añoFiltro || fecha.getFullYear() == 2020 + Number(añoFiltro))
-      )
-    })
-    .sort((a, b) => a.id - b.id)
-
-  // Mostrar resultados frontend
-  Tabla(filtrados)
-
-  // ------- FILTRO BACKEND (API)
-  try {
-    const usuario = JSON.parse(localStorage.getItem('usuario'))
-    if (!usuario) {
-      alert('Debes iniciar sesión primero')
-      return
-    }
-
-    const params = new URLSearchParams({
-      userId: usuario.id,
-      titulo: tituloFiltro,
-      categoria: categoriaFiltro,
-      min,
-      max,
-      fecha: fechaFiltro,
-      dia: diaFiltro,
-      mes: mesFiltro,
-      año: añoFiltro,
-    })
-
-    const res = await fetch(
-      `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?${params}`
-    )
-    if (!res.ok) throw new Error('Error al obtener gastos desde la API')
-
-    const data = await res.json()
-
-    // Mostrar resultados backend (sobrescribe la tabla con datos oficiales)
-    Tabla(data)
-  } catch (error) {
-    console.error('Error en filtro backend:', error)
-  }
-}
-
-function limpiarFiltros() {
-  document.getElementById('filtroTitulo').value = ''
-  document.getElementById('filtroCategoria').value = ''
-  document.getElementById('filtroMin').value = ''
-  document.getElementById('filtroMax').value = ''
-  document.getElementById('filtroFecha').value = ''
-  document.getElementById('filtroDias').value = ''
-  document.getElementById('filtroMes').value = ''
-  document.getElementById('filtroaño').value = ''
-  filtrarGastos()
-}
-
 function validarFormularioGasto() {
   let valido = true
 
@@ -307,6 +224,60 @@ async function agregarGasto() {
 
 let gastoEditandoId = null
 // consultar los gastos por id metodo get
+
+function filtrarGastos() {
+  const tituloFiltro =
+    document.getElementById('filtroTitulo')?.value.toLowerCase() || ''
+  const categoriaFiltro =
+    document.getElementById('filtroCategoria')?.value || ''
+  const min = parseFloat(document.getElementById('filtroMin')?.value) || 0
+  const max =
+    parseFloat(document.getElementById('filtroMax')?.value) || Infinity
+  const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
+  const diaFiltro = document.getElementById('filtroDias')?.value || ''
+  // const mesFiltro = document.getElementById('filtroMes')?.value || ''
+  const añoFiltro = document.getElementById('filtroaño')?.value || ''
+
+  // mes seleccionado por Botones
+  const mesFiltro = mesSeleccionado
+
+  //   --------Filtro por FRONTEND-----------
+  const filtrados = gastos
+    .filter((g) => g.titulo.toLowerCase().includes(tituloFiltro))
+    .filter(
+      (g) =>
+        !categoriaFiltro ||
+        g.categoria == categoriaFiltro ||
+        g.categoryId == categoriaFiltro
+    )
+    .filter((g) => g.monto >= min && g.monto <= max)
+    .filter((g) => !fechaFiltro || g.fecha === fechaFiltro)
+    .filter((g) => {
+      const fecha = new Date(g.fecha)
+      return (
+        (!diaFiltro || fecha.getDate() == Number(diaFiltro) + 1) && // +1 porque los días inician en 1
+        fecha.getMonth() === mesFiltro &&
+        // (!mesFiltro || fecha.getMonth() == Number(mesFiltro)) &&
+        (!añoFiltro || fecha.getFullYear() == 2020 + Number(añoFiltro))
+      )
+    })
+    .sort((a, b) => a.id - b.id)
+
+  Tabla(filtrados)
+}
+
+function limpiarFiltros() {
+  document.getElementById('filtroTitulo').value = ''
+  document.getElementById('filtroCategoria').value = ''
+  document.getElementById('filtroMin').value = ''
+  document.getElementById('filtroMax').value = ''
+  document.getElementById('filtroFecha').value = ''
+  document.getElementById('filtroDias').value = ''
+  document.getElementById('filtroMes').value = ''
+  document.getElementById('filtroaño').value = ''
+  filtrarGastos()
+}
+
 function iniciarEdicion(id) {
   try {
     fetch(
@@ -456,40 +427,6 @@ async function agregarCategoria() {
     }, 1500)
   }
 }
-
-// Iniciar edición de un gasto
-// function iniciarEdicion(id) {
-//   try {
-//     fetch(
-//       `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses/${id}`
-//     )
-//       .then((res) => res.json())
-//       .then((data) => {
-//         // Abrir modal
-//         document.getElementById('btnOpenModalGastos').click()
-
-//         // Llenar campos
-//         document.getElementById('titulo').value = data.title || data.titulo
-//         document.getElementById('descripcion').value =
-//           data.description || data.descripcion
-//         document.getElementById('monto').value = data.amount || data.monto
-//         document.getElementById('fecha').value = data.date || data.fecha
-
-//         // Seleccionar categoría correcta por id
-//         document.getElementById('categoria').value = data.categoryId
-
-//         // Cambiar títulos y botones
-//         document.getElementById('tituloModal').innerText = 'Editar Gasto'
-//         document.getElementById('btnAgregar').style.display = 'none'
-//         document.getElementById('btnGuardar').style.display = 'inline-block'
-
-//         gastoEditandoId = id
-//       })
-//   } catch (error) {
-//     console.error('Error al cargar gasto:', error)
-//   }
-// }
-// obtenerGastosDesdeAPI();
 
 function eliminarGasto(id) {
   if (!confirm('¿Estas seguro de eliminar este gasto?')) return
@@ -663,56 +600,3 @@ setTimeout(() => {
 }, 200)
 
 // -------------------------------------------------
-
-function filtrarGastos() {
-  const tituloFiltro =
-    document.getElementById('filtroTitulo')?.value.toLowerCase() || ''
-  const categoriaFiltro =
-    document.getElementById('filtroCategoria')?.value || ''
-  const min = parseFloat(document.getElementById('filtroMin')?.value) || 0
-  const max =
-    parseFloat(document.getElementById('filtroMax')?.value) || Infinity
-  const fechaFiltro = document.getElementById('filtroFecha')?.value || ''
-  const diaFiltro = document.getElementById('filtroDias')?.value || ''
-  // const mesFiltro = document.getElementById('filtroMes')?.value || ''
-  const añoFiltro = document.getElementById('filtroaño')?.value || ''
-
-  // mes seleccionado por Botones
-  const mesFiltro = mesSeleccionado
-
-  //   --------Filtro por FRONTEND-----------
-  const filtrados = gastos
-    .filter((g) => g.titulo.toLowerCase().includes(tituloFiltro))
-    .filter(
-      (g) =>
-        !categoriaFiltro ||
-        g.categoria == categoriaFiltro ||
-        g.categoryId == categoriaFiltro
-    )
-    .filter((g) => g.monto >= min && g.monto <= max)
-    .filter((g) => !fechaFiltro || g.fecha.startsWith(fechaFiltro))
-    .filter((g) => {
-      const fecha = new Date(g.fecha)
-      return (
-        (!diaFiltro || fecha.getDate() == Number(diaFiltro) + 1) && // +1 porque los días inician en 1
-        fecha.getMonth() === mesFiltro &&
-        // (!mesFiltro || fecha.getMonth() == Number(mesFiltro)) &&
-        (!añoFiltro || fecha.getFullYear() == 2020 + Number(añoFiltro))
-      )
-    })
-    .sort((a, b) => a.id - b.id)
-
-  Tabla(filtrados)
-}
-
-function limpiarFiltros() {
-  document.getElementById('filtroTitulo').value = ''
-  document.getElementById('filtroCategoria').value = ''
-  document.getElementById('filtroMin').value = ''
-  document.getElementById('filtroMax').value = ''
-  document.getElementById('filtroFecha').value = ''
-  document.getElementById('filtroDias').value = ''
-  document.getElementById('filtroMes').value = ''
-  document.getElementById('filtroaño').value = ''
-  filtrarGastos()
-}

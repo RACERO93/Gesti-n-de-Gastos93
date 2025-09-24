@@ -48,6 +48,7 @@
     </select>
 
     <button id="btnFiltro" onclick="aplicarFiltros()">Aplicar Filtros</button>
+    <button id="btnFiltro" onclick="limpiarFiltros()">Limpiar Filtro</button>
     <button id="btnGuardar" style="display: none;" onclick="actualizarGasto()">Guardar cambios</button>
     <div id="mensajeError"
       style="display:none; color: white; background-color: red; padding: 10px; margin: 10px 0; border-radius: 5px;">
@@ -58,7 +59,7 @@
     <a href="../menu.html">Volver</a>
   </div>
 
-         <!-- Tabla -->
+          <!-- Tabla -->
   <table>
     <thead>
       <tr>
@@ -78,7 +79,7 @@
       <!-- <div class="contentModal"><button class="btnModal" id="closeModal">x</button> -->
       <button class="close" onclick="cerrarModalEditar()">&times;</button>
       <h2>Editar Gasto</h2>
-      <form id="loginForm">
+     
         <form id="formEditarGasto">
 
           <!-- el modal de editar  en gasto general -->
@@ -98,10 +99,9 @@
           <label for="fechaEditar">Fecha:</label>
           <input type="date" id="fechaEditar" required><br><br>
 
-          <button type="submit" .style="display: none;" style="text-align: center;">Guardar Cambios</button>
-        </form>
-      </form>
-    </div>
+          <button type="button" onclick="guardarEdicion()" >Guardar Cambios</button>
+      </div>
+    </form>
   </div>
   </div>
 
