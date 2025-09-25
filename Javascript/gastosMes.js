@@ -77,12 +77,12 @@ function parsedDate(date) {
 //   FUNCION PARA NORMALIZAR DATOS DE LA API
 function normalizarGasto(gasto) {
   return {
-    id: gasto.id || null,
+    id: gasto.id || null, //si esxiste se usa y si no manda null
     userId: gasto.userId,
-    categoria: gasto.categoria || gasto.categoryId,
+    categoria: gasto.categoria || gasto.categoryId, //Esto se hace por si el dato viene en españpl o en ingle desde la api
     titulo: gasto.titulo || gasto.title,
     descripcion: gasto.descripcion || gasto.description,
-    monto: isNaN(Number(gasto.monto || gasto.amount))
+    monto: isNaN(Number(gasto.monto || gasto.amount)) //si no es numero lo pone en cero y si es numero le da el valor
       ? 0
       : Number(gasto.monto || gasto.amount),
     fecha: parsedDate(gasto.fecha || gasto.date), //||

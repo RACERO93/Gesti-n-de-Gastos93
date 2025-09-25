@@ -1,22 +1,25 @@
 let gastos = []
 let categoriaAPI = []
 
-// ======================== OBTENER GASTOS ========================
+// ---------------- OBTENER GASTOS
 async function obtenerGastosDesdeAPI() {
+  // Declara una funcion asincrona
   try {
     const usuario = JSON.parse(localStorage.getItem('usuario'))
     if (!usuario) {
-      alert('Debes iniciar sesión primero')
-      return
+      //para comprar si no hay  usuario y manda ( undefined y null )
+      alert('Debes iniciar sesión primero') //indicando que debe de iniciar sesion
+      return //retorna y manda un undefined  si no inicia sesion
     }
-
+    // Peticion metodo GET
     const res = await fetch(
+      //promesa
       `https://demos.booksandbooksdigital.com.co/practicante/backend/expenses?userId=${usuario.id}`
     )
-    if (!res.ok) throw new Error('Error al obtener gastos')
+    if (!res.ok) throw new Error('Error al obtener gastos') // error 200-299 si no manda el mensaje
 
-    const data = await res.json()
-
+    const data = await res.json() // la variable pdata array pasa a JSON
+    // NORMALIZA CADA OBJETO
     gastos = data.map((g) => ({
       id: g.id,
       userId: g.userId,
@@ -33,8 +36,9 @@ async function obtenerGastosDesdeAPI() {
   }
 }
 
-// ======================== FILTROS ========================
+//------------------ FILTROS ---------------
 function aplicarFiltros() {
+  // Se llama cuando quiere filtrar la lista de gasto
   const texto = document.getElementById('filtroTitulo').value.toLowerCase()
   const categoria = document.getElementById('filtroCategoria').value
   const fechaFiltro = document.getElementById('filtroFecha').value
@@ -79,7 +83,8 @@ function limpiarFiltros() {
 //   const [y, m, d] = date.split('-').map(Number)
 //   return new Date(y, m - 1, d)
 // }
-// ---------- TABLA
+
+// ---------- TABLA ----------
 function renderizarTabla(lista) {
   const tbody = document.getElementById('tablaGastos')
   tbody.innerHTML = ''
@@ -92,9 +97,10 @@ function renderizarTabla(lista) {
   }
 
   lista.forEach((g) => {
-    let nombreCategoria = 'Sin categoria'
-    const cat = categoriaAPI.find((c) => c.id == g.categoriaId)
-    if (cat) nombreCategoria = cat.name
+    //Recorre cada  elementos de la lista
+    let nombreCategoria = 'Sin categoria' //se deja por defecto para que no me salga undefined
+    const cat = categoriaAPI.find((c) => c.id == g.categoriaId) //decuelve el valor del primer elemento
+    if (cat) nombreCategoria = cat.name //si encontrola categoria la agrega
 
     const fila = document.createElement('tr')
     fila.innerHTML = `
@@ -111,21 +117,26 @@ function renderizarTabla(lista) {
   })
 }
 
-// --------------- EDITAR
+// --------------- EDITAR-----------
 function abrirModalEditar() {
-  document.getElementById('modalEditar').style.display = 'block'
+  //se declara la funcion par abrir modal
+  document.getElementById('modalEditar').style.display = 'block' //busca el DOM el Elemento del id y lo muestra
 }
 function cerrarModalEditar() {
+  //se declara la funcion para cerrar el modal
   document.getElementById('modalEditar').style.display = 'none'
 }
 window.onclick = function (event) {
+  // Asigna un manejador global para el evento clic de la ventana
   const modal = document.getElementById('modalEditar')
-  if (event.target === modal) cerrarModalEditar()
+  if (event.target === modal) cerrarModalEditar() // este evento és para que no se cierre el modal con un clic dentro
 }
 
 function editarGasto(id) {
-  const gasto = gastos.find((g) => g.id === id)
+  // identificador por id
+  const gasto = gastos.find((g) => g.id === id) //busca g.id y con el find coge el primer elemento que cumpla con la condicion
   if (!gasto) {
+    //si no encuentra nada manda una alerta
     alert('Gasto no encontrado.')
     return
   }
@@ -147,6 +158,7 @@ async function guardarEdicion() {
   const fecha = document.getElementById('fechaEditar').value
 
   if (!titulo || !categoriaId || !monto || !fecha) {
+    //valida que ninguno de los campos esten vacio
     alert('Todos los campos son obligatorios')
     return
   }
@@ -172,16 +184,16 @@ async function guardarEdicion() {
     if (!res.ok) throw new Error('Error al actualizar el gasto en la API')
 
     // actualizar en memoria
-    const index = gastos.findIndex((g) => g.id == id)
-    if (index !== -1) {
-      gastos[index] = {
-        ...gastos[index],
-        titulo,
-        categoriaId,
-        monto: Number(monto),
-        fecha,
-      }
-    }
+    // const index = gastos.findIndex((g) => g.id == id)
+    // if (index !== -1) {
+    //   gastos[index] = {
+    //     ...gastos[index],
+    //     titulo,
+    //     categoriaId,
+    //     monto: Number(monto),
+    //     fecha,
+    //   }
+    // }
 
     aplicarFiltros() // refrescar la tabla
     cerrarModalEditar()
@@ -212,7 +224,7 @@ function eliminarGasto(id) {
     })
 }
 
-// ---------------------- CATEGORIAS
+// ---------------------- CATEGORIAS----
 async function cargarCategoria() {
   try {
     const respuestaCategoria = await fetch(
@@ -226,9 +238,11 @@ async function cargarCategoria() {
 }
 // para mostrar en la tabla de categoria
 function mostrarCategorias() {
+  //llama la funcion para mostrar los select de los filtroscon los datos
   const categoriaFiltro = document.getElementById('filtroCategoria')
   categoriaAPI.map((dato) => {
-    const option = document.createElement('option')
+    // recorre categoriaAPI con forEach
+    const option = document.createElement('option') // crea una opcion por filtro
 
     option.id = dato.id
     option.text = dato.name

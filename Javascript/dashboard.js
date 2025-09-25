@@ -9,7 +9,7 @@ async function obtenerGastosDesdeAPI(filtrarPorUsuario = true) {
     let url =
       'https://demos.booksandbooksdigital.com.co/practicante/backend/expenses'
     if (filtrarPorUsuario && usuario) {
-      url += `?userId=${usuario.id}`
+      url += `?userId=${usuario.id}` //Operador
     }
 
     const res = await fetch(url)
