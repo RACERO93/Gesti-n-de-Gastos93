@@ -41,6 +41,7 @@ if (!usuario) {
 function cargarMeses() {
   mesesContainer.innerHTML = ''
   meses.forEach((mes, i) => {
+    //con el metodo forEach recorre todo los elementos de la funciion fecha en cda vuela
     const btn = document.createElement('button')
     btn.textContent = mes
     btn.classList.add('btnMes')
