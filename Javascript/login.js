@@ -1,6 +1,6 @@
-//añade un escuchador y manda el evento del DOM html
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('loginForm') //solo va a recorrer un elemento id indentificado loginform
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById('loginForm');  //solo va a recorrer un elemento id indentificado loginform
   if (!form) {
     // es la forma segura de de
     console.error("No se encontro el formulario con id='loginForm")
