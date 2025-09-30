@@ -4,6 +4,7 @@ body {
         padding: 40px;
         margin: 0;
         background: linear-gradient( 50%, rgb(94, 191, 191) 77%);
+        text-align: center;
 }
 
 .img{
@@ -47,12 +48,27 @@ body {
         font-size: 1.5em;
         color: #007BFF;
     }
-    .a{
+    
 
-        float: right;
-    }
-    .a:hover {
-        color: green;
-        box-shadow: #333;
+    .volver{
+        display: inline-block;  /* se comporto como un bloque de linea  */
+        
+        font-size: 25px;
+        font-family:serif;
+        border: 2px solid #a5a5a5;
+        border-radius: 8px;
         text-decoration: none;
+        padding: 4px 12px;        
+        box-shadow: 0 4px 8px rgba(10, 10, 10, 0.892);
+        color: black;
+        transition: 0.3s;
+        
+    }
+
+    .volver:hover {
+        box-shadow: #333;
+        text-decoration: none; 
+        background-color: #a7a9aa;
+        color: #fff;
+
     }
